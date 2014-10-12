@@ -1,0 +1,16 @@
+\documentclass[11pt]{article}
+
+\begin{document}
+ZooKeeper stores data in a tree like structure which resembles a filesystem. However, unlike most filesystems non-leaf nodes also contain data. Every value stored in ZooKeeper has an associated path with it which is used to access the data. Data is also deleted the same way. And like a regular filesystem when node is deleted with the `recursive` flag set then all the children of the node and their associated value are also deleted.
+
+In a regular ZooKeeper setup all the values are stored in a single cluster. In this proposal there are multiple clusters which receive parts of the complete namespace. All the clients which use this distributed ZooKeeper service should all agree in advance on the partitioning schema. The agreement can be done by static assignment at the time of the cluster initialisation. This can also be done by storing the partitioning information on one or all clusters so that this information can be retrieved by clients during initialisation.
+
+The namespace is divided by hashing the path of the parent of the node in question. The hash value is then used to determine to which cluster the node is mapped to. With this schema all sibling nodes are mapped to the same cluster. This has two advantages:
+\begin{enumerate}
+  \item Most ZooKeeper recipes need total ordering of the updates to function correctly. They also mostly operate on siblings. As a result all the recipes will continue to function as in the original ZooKeeper.
+  \item Locating the children of a particular node or the siblings of a node requires a lookup only in one cluster.
+\end{enumerate}
+
+Any kind of hashing solution can be used for hashing the prefix-path. In the current prototype standard hashing is used. However this can be replaced later with consistent-hashing. This would aid in migration if more clusters were to be added to an ensemble.
+
+\end{document}
