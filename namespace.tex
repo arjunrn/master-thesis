@@ -1,5 +1,5 @@
 \documentclass[11pt]{article}
-
+\usepackage{palatino}
 \begin{document}
 ZooKeeper stores data in a tree like structure which resembles a filesystem. However, unlike most filesystems non-leaf nodes also contain data. Every value stored in ZooKeeper has an associated path with it which is used to access the data. Data is also deleted the same way. And like a regular filesystem when node is deleted with the `recursive` flag set then all the children of the node and their associated value are also deleted.
 

@@ -1,0 +1,26 @@
+\chapter{Modifications}
+
+\section{Client Initialisation}
+    The information about all the clusters are stored on every cluster. When the client has to be initialised only one of the server addresses has to be provided. The client connects to the server, reads the information about all the clusters and then initialises the clients with information about all the individual clusters.
+
+\section{Node Creation}
+Before a node is created the parent needs to be checked. If the parent is an ephemeral node then an error is reported. The cluster of the parent node is obvious from the path of the child node. The call to create the node also contains flags to indicate if the node is an ephemeral node and/or a sequential node. If the node doesn't exist then a the path of nodes up to that point are also created.
+
+\section{Ensuring Path}
+The Kazoo library provides an API call to ensure that a path exists. If the path does not exist then it is created recursively. This approach is also used in ParKazoo.
+
+\section{Check for Node Existence}
+The original functionality from Kazoo is reused after it has been wrapped in the mapping to find the right cluster.
+
+\subsection{Getting Node Data}
+\subsection{Setting Value of Node}
+
+\section{Finding children of a Node}
+    First the cluster on which the children can be found is called. The we check if the parent node exists on it's own cluster. If it does but has no child nodes then querying directly on the cluster for the children nodes will throw an exception. We also ensure the path in case of future requests.
+
+
+\section{Transactions}
+Transactions are used on Zookeeper to speed up a sequence of operations. Either all the operations of a transaction are committed or the whole transaction is rolled back. This ensure that operations can be completed because only a single consensus is required to complete the whole transaction rather than an individual consensus for each transaction.\\
+    But in a distributed setup we can ensure that the transaction only if it operates on the same cluster. Although this appears to be a substantial disadvantage, most transactions operate on sibling nodes. Since all siblings are present on the same cluster in the case of strong consistency transactions can still be used to process the operations. In fact, most complex recipes like Locks, Barriers, Double Barriers which use transactions can still continue operating with this limitation.
+    To implement the transaction the original Kazoo Transaction object is wrapped with some verification logic. Every time an operation is added to the transaction the cluster corresponding to that operation is noted. Before the commit occurs the list of clusters is verified so that it contains only a single cluster.
+    

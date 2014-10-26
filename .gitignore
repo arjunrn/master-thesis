@@ -1,2 +1,6 @@
 .texpadtmp/*
 *.pdf
+*.aux
+*.fdb_latexmk
+*.log
+*.fls
