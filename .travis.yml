@@ -1,0 +1,4 @@
+script: ./scripts/build.command
+install:
+  - sudo apt-get update -qq
+  - sudo apt-get install texlive-full
