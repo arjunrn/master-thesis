@@ -4,3 +4,8 @@
 *.fdb_latexmk
 *.log
 *.fls
+*.blg
+*.bbl
+*.lot
+*.toc
+*.lof
