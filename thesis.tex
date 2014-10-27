@@ -1,4 +1,4 @@
-\documentclass[11pt]{report}
+\documentclass{Dissertation}
 \usepackage{palatino}
 \usepackage{epigraph}
 
@@ -12,12 +12,17 @@
 \makeatother
 
 \begin{document}
-\include{cover}
+\input{cover}
 
-\pagestyle{plain}
+\maketitle
+\copyrightpage
+\abstractpage
+\tableofcontents
+\listoffigures
 
-\include{contents}
+\doublespacing
 
+\setcounter{chapter}{-1}
 \include{chapters/abstract}
 \include{chapters/motivation}
 \include{chapters/zookeeper}

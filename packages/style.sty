@@ -1,0 +1,57 @@
+\ProvidesClass{packages/style}
+
+\definecolor{SchoolColor}{RGB}{78,100,126} % Grey
+\definecolor{midgrey}{rgb}{0.4, 0.4, 0.4}
+
+\renewcommand{\maketitle}{
+	\thispagestyle{empty}
+	\vspace*{\fill}
+	\vspace{100pt}
+	\begin{center}
+	\Huge \textcolor{midgrey}{\thetitle} \normalsize \\
+	\vspace{25pt}
+	by \\
+	\vspace{15pt}
+	\theauthor\\
+	\vspace{135pt}
+	\textsc{a dissertation submitted in partial fulfilment\\
+	of the requirements for the degree of \\
+	\vspace{8pt}
+	\@degree \\
+	\@department \\
+	\@university \\
+	\vspace{10pt}
+	\@degreemonth, \@degreeyear}
+	\end{center}
+	\vspace*{\fill}
+}
+
+\newcommand{\copyrightpage}{
+	\newpage
+	\thispagestyle{empty}
+	\vspace*{\fill}
+	\scshape \noindent \small \copyright \small 2014\hspace{3pt}-- \theauthor \\
+	\noindent all rights reserved.
+	\vspace*{\fill}
+	\newpage
+	\rm
+}
+
+\newcommand{\abstractpage}{
+	\newpage
+	\pagenumbering{roman}
+	\setcounter{page}{3}
+	\pagestyle{fancy}
+	\lhead{Thesis advisor: \@advisor} \rhead{\@author}
+	\renewcommand{\headrulewidth}{0.0pt}
+	\vspace*{35pt}
+	\begin{center}
+	\Large \textcolor{SchoolColor}{\@title} \normalsize \\
+	\vspace*{20pt}
+	\scshape Abstract \\ \rm
+	\end{center}
+	\input{frontmatter/abstract}
+	\vspace*{\fill}
+	\newpage \lhead{} \rhead{}
+	\cfoot{\thepage}
+}
