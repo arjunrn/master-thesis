@@ -21,8 +21,7 @@
 \RequirePackage{packages/style}
 \RequirePackage[width=5.75in, letterpaper]{geometry}
 \RequirePackage{fancyhdr}
-
-\usepackage[titletoc]{appendix}
-\renewcommand{\setthesection}{\arabic{chapter}.A\arabic{section}}
+\RequirePackage[palatino]{quotchap}
 
 \RequirePackage{setspace}
+
