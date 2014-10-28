@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{Dissertation}[2014/10/27 v1.0 Disseration Class]
+\ProvidesClass{Thesify}[2014/10/27 v1.0 Disseration Class]
 \LoadClass[12pt, oneside, letterpaper]{report}
 
 \def\degree#1{\gdef\@degree{#1}}
