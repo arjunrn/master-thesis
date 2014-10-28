@@ -25,3 +25,9 @@
 
 \RequirePackage{setspace}
 
+\RequirePackage{fontspec} %Not in the original Dissertate.cls file, maybe provided through some other package.
+\defaultfontfeatures{Mapping=tex-text}
+\newfontfamily{\smallcaps}[RawFeature={+c2sc,+scmp}]{Droid Serif}
+\setromanfont[Numbers=OldStyle, Ligatures={Common}]{Droid Serif}
+\setsansfont[Scale=MatchLowercase, BoldFont={Lato Bold}]{Lato Regular}
+\setmonofont[Scale=MatchLowercase]{Source Code Pro}
