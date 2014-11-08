@@ -1,6 +1,8 @@
-script: ./scripts/build.command
+script: 
+  - ./scripts/build.command
+  - make -C middefence
 install:
   - sudo apt-get update -qq
   - sudo cp -r fonts/* /usr/local/share/fonts/
   - sudo fc-cache -f -v
-  - sudo apt-get install texlive-full
+  - sudo apt-get install texlive-full python-pygments
