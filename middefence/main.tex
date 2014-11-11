@@ -37,7 +37,6 @@
     \begin{figure}[ht!]
         \centering
         \includegraphics[width=100mm]{images/ZKArchWithoutBG.png}
-        \caption{A simple caption \label{overflow}}
     \end{figure}
 \end{frame}
 
@@ -84,7 +83,7 @@
     \frametitle{Assigning Node to cluster}
     Path of parent is used to calculate the destionation cluster.
     \begin{equation}
-        Destination Cluster = hash(Parent Path) \% len(Num. of Clusters)
+        DestinationCluster = Hash(Parent Path)\bmod Num(Clusters)
     \end{equation}
     Sibling nodes get mapped to the same cluster.
 \end{frame}
