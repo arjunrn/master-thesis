@@ -255,6 +255,13 @@
   {TolColor7, mark=diamond*, mark size=1.5pt},
 }
 
+\pgfplotscreateplotcyclelist{msimpleplot cycle}{%
+  {TolColor2, mark=none},
+  {TolColor7, mark=none},
+  {TolColor4, mark=none},
+  {TolColor7, mark=none},
+}
+
 %}}}
 %{{{ Styles
 
@@ -288,10 +295,15 @@
     axis x line=bottom,
     axis y line=left,
     legend style={
-      cells={anchor=west},
-      draw=none
+        at={(0.8,1.2)},
+        cells={anchor=east},
+        draw=none,
     },
     cycle list name=mlineplot cycle,
+  },
+  msimpleplot/.style={
+    mlineplot,
+    cycle list name=msimpleplot cycle,
   },
   mbarplot base/.style={
     mbaseplot,
