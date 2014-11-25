@@ -72,13 +72,15 @@
         \item Host cluster of node depends on the parent path
         \item All siblings on same cluster
     \end{itemize}
-    
+\end{frame}
 
-    \textbf{ParKazoo Features}
+\begin{frame}
+    \frametitle{ParKazoo Features}
     \begin{itemize}
         \item Pure Python Implementation
         \item Supports Gevent (single threaded IO Loop)
         \item Implements many of the popular recipes.
+        \item Drop-In replacement for Kazoo.
     \end{itemize}
 \end{frame}
 
@@ -94,13 +96,21 @@
 
 \begin{frame}[fragile]
     \frametitle{Partitioned Architecture}
-    \begin{itemize}
-        \item Multiple Clusters
-        \item Single Ensemble
-        \item Every client connects to every Cluster
-        \item Connections are distributed over Clusters
-        \item Linear speedup can be achieved.
-    \end{itemize}
+    \begin{columns}[onlytextwidth]
+        \column{0.5\textwidth}
+            \begin{figure}[ht!]
+                \centering
+                \includegraphics[width=55mm]{images/ParKazooArchWithoutBG.png}
+            \end{figure}
+        \column{0.5\textwidth}
+            \begin{itemize}
+                \item Multiple Clusters
+                \item Single Ensemble
+                \item Every client connects to every Cluster
+                \item Connections are distributed over Clusters
+                \item Linear speedup can be achieved.
+            \end{itemize}
+    \end{columns}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -134,7 +144,7 @@
         ylabel={Requests},
         msimpleplot,
         width=0.9\textwidth,
-        height=6cm,
+        height=5cm,
         legend columns=2,
         enlarge y limits=0.02,
       ]
@@ -144,6 +154,7 @@
         \legend {ZooKeeper, ParKazoo}
       \end{axis}
     \end{tikzpicture}
+    \caption {The test process has 30 threads making concurrent processes making requests.}
   \end{figure}
 \end{frame}
 
@@ -156,16 +167,16 @@
         ylabel={Writes},
         mlineplot,
         width=0.9\textwidth,
-        height=6cm,
+        height=5cm,
         legend columns=2,
         enlarge y limits=0.02,
       ]
-
-        \addplot table[x=column1,y=column2] {data/parkazoo_performance.dat}; 
-        \addplot+ table[x=column1,y=column2] {data/zookeeper_performance.dat};
-        \legend {ParKazoo, ZooKeeper}
+        \addplot table[x=column1,y=column2] {data/zookeeper_performance.dat};
+        \addplot+ table[x=column1,y=column2] {data/parkazoo_performance.dat}; 
+        \legend {ZooKeeper, ParKazoo}
       \end{axis}
     \end{tikzpicture}
+    \caption {Each client has 50 threads making concurrent processes making requests.}
   \end{figure}
 \end{frame}
 
@@ -177,7 +188,7 @@
         \item Weak consistency
         \item No primary order
         \item No Transaction support
-        \item Significant speedup
+        \item Significant speedup predicted.
     \end{itemize}
 \end{frame}
 
@@ -214,45 +225,49 @@
     \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]
-    \frametitle{Primary Order}
-    \begin{itemize}
-        \item All operations from client are executed in order.
-        \item The write operations are ordered but reads are not.
-    \end{itemize}
-\end{frame}
-
 \subsection{ParKazoo Operations}
 \begin{frame}[fragile]
     \frametitle{Creating a Node}
-    \begin{itemize}
-        \item Check if the parent exists on its cluster.
-        \item Check if parent is ephemeral
-        \item If everything ok, then create the Node.
-    \end{itemize}
-    \begin{figure}[ht!]
-        \centering
-        \includegraphics[width=60mm]{images/ParKazooCreate.png}
-    \end{figure}
+    \begin{columns}[onlytextwidth]
+        \column{0.4\textwidth}
+        \begin{enumerate}
+            \item Check if the parent exists on its cluster.
+            \item Check if parent is ephemeral
+            \item If everything ok, then create the Node.
+        \end{enumerate}
+        \column{0.6\textwidth}
+        \begin{figure}[ht!]
+            \centering
+            \includegraphics[width=60mm]{images/ParKazooCreate.png}
+        \end{figure}
+    \end{columns}
 \end{frame}
 
 \begin{frame}[fragile]
     \frametitle{Getting Children of Node}
-    \begin{itemize}
-        \item All children of Node on single cluster.
-        \item Check if node exists
-        \item Check if the path exists on children cluster.
-        \item If not create it, so that watches can be left.
-    \end{itemize}
+    \begin{columns}[onlytextwidth]
+        \column{0.5\textwidth}
+        \begin{enumerate}
+            \item All children of Node on single cluster.
+            \item Check if node exists
+            \item Check if the path exists on children cluster.
+            \item If not create it, so that watches can be left.
+        \end{enumerate}
+        \column{0.5\textwidth}
+        \begin{figure}[ht!]
+            \centering
+            \includegraphics[height=60mm]{images/ParKazooGetChildren.png}
+        \end{figure}
+    \end{columns}
 \end{frame}
 
 \begin{frame}[fragile]
     \frametitle{Deleting a Node}
-    \begin{itemize}
+    \begin{enumerate}
         \item Delete can be recursive.
         \item Then delete from all clusters.
         \item If not recursive, then check if node has children.
-    \end{itemize}
+    \end{enumerate}
 \end{frame}
 
 \end{document}
