@@ -32,6 +32,19 @@
     \node at (7,6.75) {Server 3};
     \draw[densely dashed] (-0.5,5.0) rectangle (8.5,8);
     \node at (4.0, 5.5){Cluster 3};
+    
+    \foreach \y in {0,1,2,3,4,5}
+    {
+        \draw (10.5,\y*2-2) rectangle(12.5,\y*2-1);
+        \node at (11.5,\y*2-1.5) {Client \y};
+    }
+    
+    \draw[->>, thin] (10.5,-1.5)  to [out=180,in=0,looseness=1] (8,0.75);
+    \draw[->>, thin] (10.5,0.5)  to [out=180,in=0,looseness=1] (8,6.75);
+    \draw[->>, thin] (10.5,2.5)  to [out=180,in=0,looseness=1] (8,3.75);
+    \draw[->>, thin] (10.5,4.5)  to [out=180,in=0,looseness=1] (8,0.75);
+    \draw[->>, thin] (10.5,6.5)  to [out=180,in=0,looseness=1] (8,3.75);
+    \draw[->>, thin] (10.5,8.5)  to [out=180,in=0,looseness=1] (8,6.75);
 
 \end{tikzpicture}
 

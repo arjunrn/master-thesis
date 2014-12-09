@@ -1,1 +1,9 @@
 \chapter{Evaluation}
+
+The peak write throughput performance of the original ZooKeeper and Parkazoo are compared.
+
+\section{Test Setup}
+The size of the quorum is the factor against which performance is measured. Three is the smallest number of servers required for a quorum. One failure is tolerated but both the other servers must be available. This setup generally gives the fastest throughput. A quorum needs 3 or more odd number of servers. Five servers is the next largest and seven and nine come after that. Quorums larger than these are generally not used in production. Our test setup consists of comparing the performance of a three server ZooKeeper cluster against a nine server ParKazoo ensemble.
+
+Multiple nodes make requests to the cluster or the ensemeble. Each node has multiprocesses and each process has multiple threads. Each thread has its own Kazoo or ParKazoo client object to make requests to the servers.
+Kazoo provides a recipe for barrier which is used by the clients to start making requests. All the nodes start making request when they clear the barrier. Every request is recorded with a timestamp and the time it took to complete the request.
