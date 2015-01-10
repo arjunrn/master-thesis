@@ -1,0 +1,39 @@
+\RequirePackage[ngerman=ngerman-x-latest]{hyphsubst}
+\documentclass[ngerman,BCOR=4mm]{tudscrreprt}
+\usepackage{selinput}\SelectInputMappings{adieresis={ä},germandbls={ß}}
+\usepackage[T1]{fontenc}
+\usepackage{babel}
+\usepackage{isodate}
+\begin{document}
+\faculty{Fakultät Informatik}
+\institute{Institut für Systemarchitektur}
+\chair{Chair of System Engineering}
+\date{16.12.2014}
+\title{%
+ParKazoo - Implementing a Partitioned ZooKeeper using Kazoo.
+}
+\subject{master}
+\graduation[M.Sc.]{Master of Science}
+\author{%
+Arjun Naik
+\matriculationnumber{3930370}
+\dateofbirth{29.10.1987}
+\placeofbirth{Mumbai}
+}
+\matriculationyear{2015}
+\supervisor{Dagobert Duck \and Mac Moneysac}
+\professor{Prof. Dr. Christof Fetzer}
+\maketitle
+
+\tableofcontents
+
+\include{chapters/abstract}
+\include{chapters/motivation}
+\include{chapters/zookeeper}
+\include{chapters/modifications}
+\include{chapters/evaluation}
+\include{chapters/improvements}
+\clearpage
+\bibliography{references}
+
+\end{document}
