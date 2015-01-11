@@ -154,7 +154,7 @@
         \legend {ZooKeeper, ParKazoo}
       \end{axis}
     \end{tikzpicture}
-    \caption {The test process has 30 threads making concurrent processes making requests.}
+    \caption {The test process has 30 threads with concurrent processes making requests.[Single Machine]}
   \end{figure}
 \end{frame}
 
@@ -164,7 +164,7 @@
     \begin{tikzpicture}
       \begin{axis}[
         xlabel={Clients},
-        ylabel={Writes},
+        ylabel={Requests},
         mlineplot,
         width=0.9\textwidth,
         height=5cm,
@@ -176,7 +176,7 @@
         \legend {ZooKeeper, ParKazoo}
       \end{axis}
     \end{tikzpicture}
-    \caption {Each client has 50 threads making concurrent processes making requests.}
+    \caption {Each client has 50 threads with concurrent processes making requests.[Multiple Machines]}
   \end{figure}
 \end{frame}
 
