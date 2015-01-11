@@ -5,32 +5,113 @@
 
 \input{diagrams/parkazoo}
   
-\begin{lstlisting}
-def hello(name):
-    print 'Hello', name
- 
-if __name__=='__main__':
-    hello('Me')    
-\end{lstlisting}
-
 \section{Client Initialisation}
     The information about all the clusters are stored on every cluster. When the client has to be initialised only one of the server addresses has to be provided. The client connects to the server, reads the information about all the clusters and then initialises the clients with information about all the individual clusters.
 
 \section{Node Creation}
 Before a node is created the parent needs to be checked. If the parent is an ephemeral node then an error is reported. The cluster of the parent node is obvious from the path of the child node. The call to create the node also contains flags to indicate if the node is an ephemeral node and/or a sequential node. If the node doesn't exist then a the path of nodes up to that point are also created.
 
+\begin{lstlisting}
+  def create(self, path, value=b"empty", ephemeral=False, sequence=False, makepath=False, acl=None):
+    try:
+        p_value, stat = p_cluster.get(parent_path)
+        if stat.owner_session_id is not None:
+            raise NoChildrenForEphemeralsError
+    except NoNodeError:
+        pass
+    else:
+        makepath = True
+    clusters = self._get_path_clients(path)
+    cluster = self._hash_function(clusters, path)
+    return cluster.create(path, value=value, ephemeral=ephemeral, sequence=sequence, makepath=makepath, acl=acl)
+\end{lstlisting}
+
+\input{diagrams/parkazoo_operations/creation}
+
+The figure above shows the steps in the creation of a node. The node to be created /node2/child1. The node child1 and its parent node2 maybe present on 2 different clusters. If the make\_path argument is not set to True then the parent node node2 should exist. The destination cluster of child1 maybe different from its parent node2. In that case the node2 needs to be created on the destination cluster in the first step. This is done with the ensure\_path call. Then the node is created with the create call.
+
+
 \section{Ensuring Path}
 The Kazoo library provides an API call to ensure that a path exists. If the path does not exist then it is created recursively. This approach is also used in ParKazoo.
+
+\begin{lstlisting}
+def ensure_path(self, path, acl=None):
+  parent, child = ospath.split(path)
+  if parent is not '/':
+      self.ensure_path(parent, acl=acl)
+
+  parent_clusters = self._get_path_clients(parent)
+  parent_cluster = self._hash_function(parent_clusters, parent)
+  _, parent_stat = parent_cluster.get(parent)
+  if parent_stat.owner_session_id is not None:
+      raise NoChildrenForEphemeralsError
+
+  clusters = self._get_path_clients(path)
+  cluster = self._hash_function(clusters, path)
+  ensured = cluster.ensure_path(path, acl)
+  return ensured
+\end{lstlisting}
 
 \section{Check for Node Existence}
 The original functionality from Kazoo is reused after it has been wrapped in the mapping to find the right cluster.
 
-\subsection{Getting Node Data}
-\subsection{Setting Value of Node}
+\begin{lstlisting}
+  def exists(self, path, watch=None):
+    clusters = self._get_path_clients(path)
+    cluster = self._hash_function(clusters, path)
+    exists = cluster.exists(path, watch)
+    if exists:
+        self.logger.debug('Path:%s exists on cluster num: %d' % (path, clusters.index(cluster)))
+    else:
+        self.logger.debug('Path:%s not available on cluster num: %d' % (path, clusters.index(cluster)))
+    return exists
+\end{lstlisting}
 
-\section{Finding children of a Node}
+\subsection{Getting Node Data}
+Fetching the data for a node is straightforward. Hash the parent path of the node and find the cluster to which the node is mapped. Then perform the get using the Kazoo client to fetch the data.
+
+\begin{lstlisting}
+  def get(self, path, watch=None):
+    clusters = self._get_path_clients(path)
+    cluster = self._hash_function(clusters, path)
+    return cluster.get(path, watch)
+\end{lstlisting}
+
+
+\subsection{Setting Value of Node}
+To set the value of a node find the cluster to which the node is mapped. Then using the Kazoo client for that cluster perform the set operation. 
+
+\begin{lstlisting}
+  def set(self, path, value, version=-1):
+    clusters = self._get_path_clients(path)
+    cluster = self._hash_function(clusters, path)
+    return cluster.set(path, value=value, version=version)
+\end{lstlisting}
+
+\subsection{Finding children of a Node}
     First the cluster on which the children can be found is called. The we check if the parent node exists on it's own cluster. If it does but has no child nodes then querying directly on the cluster for the children nodes will throw an exception. We also ensure the path in case of future requests.
 
+\begin{lstlisting}
+  def get_children(self, path, watch=None, include_data=False):
+    node_exists = self.exists(path)
+    clusters = self._get_path_clients(path)
+    full_path = _prefix_root(self.chroot, path)
+    full_path = '%s/' % full_path if not full_path.endswith('/') else full_path
+    children_cluster = clusters[abs(hash(full_path)) % len(clusters)]
+    self.logger.debug('Checking for children on cluster: %d' % clusters.index(children_cluster))
+    try:
+        return children_cluster.get_children(path, watch=watch, include_data=include_data)
+    except NoNodeError:
+        if node_exists:
+            children_cluster.ensure_path(path)
+            return children_cluster.get_children(path, watch=watch, include_data=include_data)
+        else:
+            raise
+\end{lstlisting}
+
+\input{diagrams/parkazoo_operations/get_children}
+
+In the above figure a query to the node \textit{/node2} to find the children. They children of \textit{/node2} maybe present on another cluster. In that case the parent node's existence has to be confirmed on the destination cluster. If the node does not exist then it has to be created. This is done so that watches can be left on the node in case nodes are created later.
 
 \section{Transactions}
 Transactions are used on Zookeeper to speed up a sequence of operations. Either all the operations of a transaction are committed or the whole transaction is rolled back. This ensure that operations can be completed because only a single consensus is required to complete the whole transaction rather than an individual consensus for each transaction.\\

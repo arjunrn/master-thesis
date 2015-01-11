@@ -2,3 +2,5 @@
 For every write operation the Zookeeper cluster requires a consensus between all member nodes to reply. This slows down the response time. However the reads can be scaled only by increasing the number of members participating in the consensus, i.e. the number of Zookeeper server. These competing but opposing forces makes scaling Zookeeper difficult. 
 
 We try to solve these problem by partitioning the namespace which would be normally held by a single cluster and distributing them among a number of Zookeeper cluster. We also implement this solution completely on the client-side, so this does not necessitate any modification to the the Zookeeper source code. The client library is implemented in such a way that the consistency properties of Zookeeper are also upheld.
+
+Mention that this is not a conceptual issue, more of an engineering issue which can solve some of the challenges out there without wating for new stuff to come out. It's based on the fact that ZooKeeper is a stable and time-test piece of software.

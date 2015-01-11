@@ -71,11 +71,10 @@
 % \setromanfont[Numbers=OldStyle, Ligatures={Common}]{EB Garamond}
 % \setsansfont[Scale=MatchLowercase, BoldFont={Lato Bold}]{Lato Regular}
 % \setmonofont[Scale=MatchLowercase]{Luxi Mono}
-\newfontfamily\listingsfont[Scale=0.7]{Luxi Mono}
+\newfontfamily\listingsfont[Scale=0.8]{Luxi Mono}
 
 % an environment for paragraph-style section
 \providecommand\newthought[1]{%
    \addvspace{1.0\baselineskip plus 0.5ex minus 0.2ex}%
    \noindent\textsc{#1}%
 }
-
