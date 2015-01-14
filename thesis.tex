@@ -54,16 +54,22 @@
 \doublespacing
 
 \pagenumbering{arabic}
-\setcounter{chapter}{0}
-\include{chapters/abstract}
-\include{chapters/motivation}
+% \setcounter{chapter}{-1}
+\include{chapters/introduction}
+\include{chapters/related_work}
 \include{chapters/zookeeper}
 \include{chapters/modifications}
+\include{chapters/specification_compliance}
 \include{chapters/evaluation}
 \include{chapters/limitations}
 \include{chapters/improvements}
-\include{chapters/related_work}
+
+
+
+% the back matter
 \clearpage
 \bibliography{references}
+\addcontentsline{toc}{chapter}{References}
+\bibliographystyle{apalike2}
 
 \end{document}

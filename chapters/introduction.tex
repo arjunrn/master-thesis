@@ -1,0 +1,32 @@
+\chapter{Introduction}
+
+\section{Motivation}
+
+Distributed Coordination Services are a critical component of many distributed applications. There have been several implementations of such algorithms in the past. Google published a paper on an internal service called Chubby~\cite{burrows2006chubby}. This sparked an interest in using similar services in other distributed application. ZooKeeper~\cite{hunt2010zookeeper} was developed by Yahoo to replicate some the functionality of Chubby. ZooKeeper was implemented in Java. Today it is mainted by the Apache Software Foundation. It is also a component in other distributed frameworks like Hadoop and Cassandra. There have been other implementations of coordination services like Doozer and etcd. These projects are relatively new and are based on the Raft consensus protocol which is not extensively deployed in working systems. 
+
+Everyday there are distributed applications which get larger every year. Coordination services need to keep up with this larger traffic demands. The throughput rate of ZooKeeper is limited by two main factors:
+\begin{enumerate}
+  \item Local Disk Throughput
+  \item Network Speed
+  \item Local Processing capacity.
+\end{enumerate}
+
+For every write operation the Zookeeper cluster requires a consensus between all member nodes to reply. This slows down the response time. However the reads can be scaled only by increasing the number of members participating in the consensus, i.e. the number of Zookeeper server. These competing but opposing forces makes scaling Zookeeper difficult. 
+
+We try to solve these problem by partitioning the namespace which would be normally held by a single cluster and distributing them among a number of Zookeeper cluster. We also implement this solution completely on the client-side, so this does not necessitate any modification to the the Zookeeper source code. The client library is implemented in such a way that the consistency properties of Zookeeper are also upheld.
+
+At this point, it has to be mentioned that this solution is not an attempt to reinvent consesus algorithms. It attempts to solve a problem using existing time-tried technologies and concepts. ZooKeeper has been deployed in several large scale projects and there exists bindings to connect to ZooKeeper in several programming languages. There also exists a large body of documentation supporting the use and deployment of ZooKeeper. It's also based on Java which is a common choice for large applications. This solutions attempts to provide a solution for existing distributed applications which require higher throughput.
+
+\section{Structure of Thesis}
+
+\textit{Chapter 2} introduces ZooKeeper which is the backbone of the proposed solution. It explains the important concepts like how data is stored and the operation.
+
+\textit{Chapter 3} discusses the related work around. It introduces some of the motivations and the intentions for the implementing ZooKeeper.
+
+\textit{Chapter 4} explains the implementation of ParKazoo. All of operations which are implemented are explained in detail.
+
+In \textit{Chapter 5} the tests which are used to confirm the functionality of Kazoo are reused to confirm the functionality of ParKazoo are also discussed.
+
+\textit{Chapter 6} is the Evaluation chapter which discusses the results of testing the throughput and the latency results.
+
+\textit{Chapter 7} is the Future Improvements and Limitations chapter.

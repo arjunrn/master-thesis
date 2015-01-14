@@ -1,24 +1,29 @@
-\begin{tikzpicture}[node distance=1.5cm]
-\draw[ultra thick] (4,5) circle (15pt);
-\draw[ultra thick] (2,2.5) circle (15pt);
-\draw[ultra thick] (6,2.5) circle (15pt);
-\node[ultra thick, regular polygon, regular polygon sides=6, minimum width=30pt,draw, rotate=30] (reg1) at (0,0){};
-\node[ultra thick, regular polygon, regular polygon sides=6, minimum width=30pt,draw, rotate=30] (reg1) at (2,0){};
-\node[ultra thick, regular polygon, regular polygon sides=6, minimum width=30pt,draw, rotate=30] (reg1) at (4,0){};
+\begin{figure}[h!]
+  \centering
+  \begin{tikzpicture}[node distance=1.5cm]
+    \draw[ultra thick] (4,5) circle (15pt);
+    \draw[ultra thick] (2,2.5) circle (15pt);
+    \draw[ultra thick] (6,2.5) circle (15pt);
+    \node[ultra thick, regular polygon, regular polygon sides=6, minimum width=30pt,draw, rotate=30] (reg1) at (0,0){};
+    \node[ultra thick, regular polygon, regular polygon sides=6, minimum width=30pt,draw, rotate=30] (reg1) at (2,0){};
+    \node[ultra thick, regular polygon, regular polygon sides=6, minimum width=30pt,draw, rotate=30] (reg1) at (4,0){};
 
-\draw (0,0.55) -- (2,2);
-\draw (2,0.55) -- (2,2);
-\draw (4,0.55) -- (2,2);
-\draw (2,3) -- (4,4.5);
-\draw (6,3) -- (4,4.5);
-\draw[densely dashed] (6,0) -- (6,2);
+    \draw (0,0.55) -- (2,2);
+    \draw (2,0.55) -- (2,2);
+    \draw (4,0.55) -- (2,2);
+    \draw (2,3) -- (4,4.5);
+    \draw (6,3) -- (4,4.5);
+    \draw[densely dashed] (6,0) -- (6,2);
 
-\node at (3,5) {/};
-\node at (0.9,2.5) {/app1};
-\node at (7.2,2.5) {/app2};
+    \node at (3,5) {/};
+    \node at (0.9,2.5) {/app1};
+    \node at (7.2,2.5) {/app2};
 
-\node at (0,-1) {/app1/p\_1};
-\node at (2,-1) {/app1/p\_1};
-\node at (4,-1) {/app1/p\_1};
+    \node at (0,-1) {/app1/p\_1};
+    \node at (2,-1) {/app1/p\_1};
+    \node at (4,-1) {/app1/p\_1};
 
-\end{tikzpicture}
+  \end{tikzpicture}
+  \centering
+  \caption{ZooKeeper Data Organization}
+\end{figure}

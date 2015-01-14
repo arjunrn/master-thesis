@@ -1,0 +1,42 @@
+\chapter{Specification Compliance}
+
+The Kazoo library has several unittest which tests every aspect of its functionality and ensures that every build complies with the ZooKeeper client standards. After implementing the ParKazoo library we use the same tests to ensure compliance with the standard. We discuss some of the tests. We also discuss some of the tests which were implemented specifically for ParKazoo.
+
+The unitest~\cite{hamill2004unit} framework used by the Kazoo library is called \textit{nose}. Unit tests are designed so that they test on a small part or "unit" of program. In a procedural program a unit is could be a function and in an object-oriented program it could be an interface, a class or a method.
+
+The unit test setup consists of totally 9 servers each running ZooKeeper. The 9 servers are divided into 3 clusters each running 3 servers. All the servers are actually locally running ZooKeeper processes. To one of the clusters we write the information to connect to all the clusters including itself. Then the server addresses of this cluster is passed to the ParKazoo clients used in the unit tests. 
+
+\section{Kazoo Tests}
+
+\subsection{Barrier Tests}
+There are tests to check the correctness of both the \textit{SingleBarrier} and ~\textit{DoubleBarrier}. For the single barrier test, we check that the barrier doesn't wait on a barrier that does not exist and that it successfully waits on a barrier that is initialized and exists.
+
+For the double barrier we first test the basic functionality of creating the barrier, entering it, then removing it and leaving it. Then we test that the DoubleBarrier works with 2 and three threads. Finally we test if the barrier functionality is unchanged when the corresponding paths for the barriers exist and they don't. \textit{Barrier} and \textit{DoubleBarrier} internally use \textit{create}, \textit{delete} and \textit{ensure\_path} calls on the ParKazoo client.
+
+\subsection{Counter Tests}
+
+We test that the counter functions correctly for both integer and float values. We also ensure that an error is raised when invalid values are added to the counter.
+
+The \textit{Counter} class internally uses \textit{ensure\_path}, \textit{set}, \textit{get} and \textit{retry} operations of the ParKazoo client. In the \textit{set} operation the 'version' parameter of the set operation is used so that only one client updates the client at a time.
+
+\subsection{Lock Tests}
+The lock test are quite extensive since locks are one of most commonly used use case for ZooKeeper. First the basic functionality of the lock is checked using just one thread. We spawn a thread which attempts to acquire the lock. We ensure that the thread's candidacy becomes visible on the main thread using the \textit{contenders()} method in the ~\textit{Lock} class. In the second tests multiple threads are created which all attempt to acquire a common. In the meanwhile the main thread acquires the lock first and get a list of contenders for the lock which should be the clients in the other threads. Then the test checks if the lock is acquired and released as the order of the contenders obtained in the previous step. The next test ensures that an acquired lock is released when the client session is lost. This done done by forcing the client to disconnect. Upon reconnection the client should indicate that the lock has been released. The nonblocking call to acquire a lock is also verified for correct execution. We also ensure that when the acquisition of the lock is cancelled an exception is raised. Double acquisitions and multiple acquire-and-release on the same lock are checked.
+
+\textit{Lock} class uses the \textit{get\_children()}, \textit{delete()}, \textit{create()} and \textit{exits()} methods in the ParKazoo client. It also makes heavy use of watches.
+
+\subsection{Semaphore Tests}
+
+\subsection{Partitioner Tests}
+The unit test for \textit{SetPartitioner} tests the basic functionality by checking if a one member party acquires all the members in a set. Then a two member party is used to check if the members of the set are divided equally and if the partitioner still functions correctly when the membership of the party is expanded. Finally we verify for the condition when the members of the party are larger than the number of items available. 
+
+\subsection{Party Tests}
+
+\subsection{Queue Tests}
+
+\subsection{Retry Tests}
+
+\subsection{Access Control Lists Tests}
+
+\subsection{Watchers Tests}
+
+\section{ParKazoo Tests}

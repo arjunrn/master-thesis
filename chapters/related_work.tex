@@ -1,3 +1,7 @@
 \chapter{Related Work}
 
-There have been several projects which implement a distributed coordination services. The basis for such systems are consensus algorithms. Paxos is the most popular consensus algorithm and modified versions of it have been implemented in several coordination services.
+There have been several projects which implement a distributed coordination services. The basis for such systems are consensus algorithms. Paxos~\cite{lamport2001paxos} is the most popular consensus algorithm and modified versions of it have been implemented in several coordination services.
+
+In 2010 Flavio Juqueira, one of the creators of ZooKeepers suggested a partitioned implementation~\cite{junqueira2010partitioned} of ZooKeeper.
+
+There was also an attempt to modify the zookeeper core itself with multiple quorums~\cite{biligiri2014multiquorum}.
