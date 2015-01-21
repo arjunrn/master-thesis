@@ -28,7 +28,7 @@ Before a node is created the parent needs to be checked. If the parent is an eph
 
 \input{diagrams/parkazoo_operations/creation}
 
-The figure above shows the steps in the creation of a node. The node to be created /node2/child1. The node child1 and its parent node2 maybe present on 2 different clusters. If the make\_path argument is not set to True then the parent node node2 should exist. The destination cluster of child1 maybe different from its parent node2. In that case the node2 needs to be created on the destination cluster in the first step. This is done with the ensure\_path call. Then the node is created with the create call.
+The figure above shows the steps in the creation of a node. The node to be created /node2/child1. The node \textit{child1} and its parent \textit{node2} maybe present on 2 different clusters. If the make\_path argument is not set to True then the parent node node2 should exist. The destination cluster of child1 maybe different from its parent node2. In that case the node2 needs to be created on the destination cluster in the first step. This is done with the ensure\_path call. Then the node is created with the create call.
 
 
 \section{Ensuring Path}

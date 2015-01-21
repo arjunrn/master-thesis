@@ -13,7 +13,7 @@ The servers keep their respective datastores in memory which restricts the amoun
 
 \input{diagrams/zookeeper}
 
-The ZooKeeper server communicate with each other using a consensus protocol which is modelled on Paxos but is not entirely similar. When a request is received on the servers the request is forwared to the leader which computes the neccessary changes and then broadcasts it to the rest of the servers. When a majority of the servers respond with an acknowledgement the transaction can be committed and a response can be sent to the client. 
+The ZooKeeper server communicate with each other using a consensus protocol which is modeled on Paxos but is not entirely similar. When a request is received on the servers the request is forwarded to the leader which computes the necessary changes and then broadcasts it to the rest of the servers. When a majority of the servers respond with an acknowledgment the transaction can be committed and a response can be sent to the client. 
 
 The size of the quorum is the factor against which performance is measured. Three is the smallest number of servers required for a quorum. One failure is tolerated but both the other servers must be available. This setup generally gives the fastest throughput. A quorum needs 3 or more odd number of servers. Five servers is the next largest and seven and nine come after that. Quorums larger than these are generally not used in production.
 
@@ -30,7 +30,7 @@ ZooKeeper data is presented like a UNIX file system. There are no files and dire
 
 \input{diagrams/zookeeper_data}
 
-ZooKeeper has two types of nodes, regular and emphemeral nodes. Ephemeral nodes are present only as long at the client which created them is connected. If the connection drops or the client crashes causing the connection to drop the the empheral node is deleted. Ephemeral nodes also are different because they cannot have child nodes. Attempting to create a child node for an ephemeral node throws an exception. Regular nodes are persisted across sessions.
+ZooKeeper has two types of nodes, regular and ephemeral nodes. Ephemeral nodes are present only as long at the client which created them is connected. If the connection drops or the client crashes causing the connection to drop the the ephemeral node is deleted. Ephemeral nodes also are different because they cannot have child nodes. Attempting to create a child node for an ephemeral node throws an exception. Regular nodes are persisted across sessions.
 
 \subsection{ZooKeeper Guarantees}
 
@@ -38,10 +38,10 @@ ZooKeeper has two types of nodes, regular and emphemeral nodes. Ephemeral nodes 
 At a first glance, it may appear that a Distributed Database like Cassandra or BigTable, HBase may solve this problem. However these databases are actually built using a distributed co-ordination service like ZooKeeper. ZooKeeper which is maintained by the Apache Foundation is used as a component in Cassandra. Similarly Chubby which was developed as a co-ordination service by Google is used in GFS and BigTable.
 
 \section{Kazoo Library}
-Since the connections are made through TCP there are several languages which have libraries to communicate with ZooKeeper. The Python~\cite{van2002python} library which is provided with the ZooKeeper package is quite small but contains limited features. Kazoo is a Python library which contains many features which are inspired from Netflix's Curator. It is a pure Python implementation which means that it doesn't have any external C dependenices. It has support for older version of ZooKeeper viz. 3.4 and 3.3. It has also support for evented IO through gevent. It also provides many higher order primitives like Watchers, Locks, Barriers. For these reason Kazoo is used as the base for the ParKazoo library. ParKazoo tries to maintain the same API as Kazoo. It can be infact for most applications be used as a drop-in replcement for Kazoo.
+Since the connections are made through TCP there are several languages which have libraries to communicate with ZooKeeper. The Python~\cite{van2002python} library which is provided with the ZooKeeper package is quite small but contains limited features. Kazoo is a Python library which contains many features which are inspired from Netflix's Curator. It is a pure Python implementation which means that it doesn't have any external C dependencies It has support for older version of ZooKeeper viz. 3.4 and 3.3. It has also support for evented IO through gevent. It also provides many higher order primitives like Watchers, Locks, Barriers. For these reason Kazoo is used as the base for the ParKazoo library. ParKazoo tries to maintain the same API as Kazoo. It can be in fact for most applications be used as a drop-in replacement for Kazoo.
 
 \subsection{Library API}
-The Kazoo library provides the following functions. Some of these are also present in the standard Python libary included in the ZooKeeper package. They are:
+The Kazoo library provides the following functions. Some of these are also present in the standard Python library included in the ZooKeeper package. They are:
   \subsubsection{Create Node}
   \begin{lstlisting}
     def create(path, value, make_path=False, watch=None)
@@ -56,7 +56,7 @@ The Kazoo library provides the following functions. Some of these are also prese
   \begin{lstlisting}
     def delete(path, recursive=False)
   \end{lstlisting}
-  If the node has children then the node can be deleted by setting the recursive argument to True. Otherwise the delete call throughs an exception which indicates that the node is not empty.
+  If the node has children then the node can be deleted by setting the recursive argument to True. Otherwise the delete call throws an exception which indicates that the node is not empty.
   
   \subsubsection{Getting Children of a Node}
   \begin{lstlisting}
@@ -75,13 +75,13 @@ The Kazoo library provides the following functions. Some of these are also prese
   \subsubsection{Election}
   Multiple nodes can participate in election to become the leader. This construct allows the client to participate and then call a function when the client wins the election. There is also functionality to query for all the contenders in the election.
   \subsubsection{Locks}
-    Locks are another synchronization mechanism. Only one client can acquire the lock. If the lock cannot be acquired then the client blocks till the lock is acquired. The acquirement of the lock can be also cancelled. Also all the contenders for the lock can be queried. Kazoo also provides Semaphore objects which are similar to the python Semaphores in the threading module. The Kazoo Semaphore object can be initialized with an initial count which indicates the number of availble resources. Whenever one of the clients acquires the semaphore then the count is decremented. This way the number of client accessing the distributed resource can be regulated.
+    Locks are another synchronization mechanism. Only one client can acquire the lock. If the lock cannot be acquired then the client blocks till the lock is acquired. The acquirement of the lock can be also canceled Also all the contenders for the lock can be queried. Kazoo also provides Semaphore objects which are similar to the python Semaphores in the threading module. The Kazoo Semaphore object can be initialized with an initial count which indicates the number of available resources. Whenever one of the clients acquires the semaphore then the count is decremented. This way the number of client accessing the distributed resource can be regulated.
   \subsubsection{Partitioner}
   This construct is used to divide the members of a set among the members of a party, such that every member receives zero or more items and each item is only given to one member. This is generally used to divide tasks among distributed client nodes.
   \subsubsection{Party}
     Parties are used to keep a registry of nodes. Client nodes may enter or leave a Party which updates the membership registry of the party.
   \subsubsection{Queue}
-    Kazoo supports simple Queues and a improved implementation called LockingQueue which provides locking and priority support. The simple Queue can be used to add items into the queue. The consumers of the queue can remove items from the queue. However if the the consumer client which acquired an item from the node crashes then the queue item is lost even though it might not have been processed. The LockingQueue provides items to consumers but does not remove the item from the queue. It creates an ephemeral node corresponding to the item which indicates that the item is being processed. In case the consumer client crashes then the empheral node is deleted and another consumer client can acquire the item. Once the consumer finishes processing the item it should explicitly inform the queue that it has processed the queue item at which time the queue removes the item from the queue.
+    Kazoo supports simple Queues and a improved implementation called LockingQueue which provides locking and priority support. The simple Queue can be used to add items into the queue. The consumers of the queue can remove items from the queue. However if the the consumer client which acquired an item from the node crashes then the queue item is lost even though it might not have been processed. The LockingQueue provides items to consumers but does not remove the item from the queue. It creates an ephemeral node corresponding to the item which indicates that the item is being processed. In case the consumer client crashes then the ephemeral node is deleted and another consumer client can acquire the item. Once the consumer finishes processing the item it should explicitly inform the queue that it has processed the queue item at which time the queue removes the item from the queue.
   \subsubsection{Watchers}
-  A client may need to watch for only certain types of changes to a node, such as the data of the node or its children. The watches left on the nodes by the client calls like get, get\_children or set are triggered whenever the node is updates irrespective of the type of event. The watchers provide more fine grained control. They can also be disabled by returning a False boolean function from the callback function.
+  A client may need to watch for only certain types of changes to a node, such as the data of the node or its children. The watches left on the nodes by the client calls like get, get\_children or set are triggered whenever the node is updates irrespective of the type of event. The watchers provide more fine grained control. They can also be disabled by returning a False Boolean function from the callback function.
   
