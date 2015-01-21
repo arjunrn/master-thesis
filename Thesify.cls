@@ -49,11 +49,12 @@
 \widowpenalty=300
 \clubpenalty=300
 
+
 \defaultfontfeatures{Mapping=tex-text}
 \newfontfamily{\smallcaps}[RawFeature={+c2sc,+scmp}]{EB Garamond}
 \setromanfont[Numbers=OldStyle, Ligatures={Common}]{EB Garamond}
 \setsansfont[Scale=MatchLowercase, BoldFont={Lato Bold}]{Lato Regular}
-\setmonofont[Scale=MatchLowercase]{Source Code Pro}
+\setmonofont[Scale=MatchLowercase]{Luxi Mono}
 
 \RequirePackage[labelfont={bf,sf,footnotesize,singlespacing},
 								textfont={sf,footnotesize,singlespacing},
@@ -103,3 +104,35 @@
       {\@latex@warning{Empty `thebibliography' environment}}
      \endlist}
 \makeatother
+
+
+%{{{ --- pgfplots ---------------------
+\RequirePackage{color}
+\RequirePackage{xcolor}
+\RequirePackage{pgfplots}
+\RequirePackage{pgfplotstable}
+%{{{ Colors
+
+% TolColors from http://www.r-bloggers.com/the-paul-tol-21-color-salute/
+\definecolor{TolColor1}{HTML}{332288}   % dark purple
+\definecolor{TolColor2}{HTML}{6699CC}   % dark blue
+\definecolor{TolColor3}{HTML}{88CCEE}   % light blue
+\definecolor{TolColor4}{HTML}{44AA99}   % light green
+\definecolor{TolColor5}{HTML}{117733}   % dark green
+\definecolor{TolColor6}{HTML}{999933}   % dark brown
+\definecolor{TolColor7}{HTML}{DDCC77}   % light brown
+\definecolor{TolColor8}{HTML}{661100}   % dark red
+\definecolor{TolColor9}{HTML}{CC6677}   % light red
+\definecolor{TolColor10}{HTML}{AA4466}  % light pink
+\definecolor{TolColor11}{HTML}{882255}  % dark pink
+\definecolor{TolColor12}{HTML}{AA4499}  % light purple
+
+%}}}
+%{{{ Color cycles
+
+\pgfplotscreateplotcyclelist{mlineplot cycle}{%
+  {TolColor2, mark=*, mark size=1.5pt},
+  {TolColor7, mark=square*, mark size=1.3pt},
+  {TolColor4, mark=triangle*, mark size=1.5pt},
+  {TolColor7, mark=diamond*, mark size=1.5pt},
+}

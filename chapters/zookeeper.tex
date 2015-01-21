@@ -1,8 +1,10 @@
-\epigraph{``...ZooKeeper, a service for coordinating processes of distributed applications. Since ZooKeeper is part of critical infrastructure, ZooKeeper aims to provide a simple and high performance kernel for building more complex coordination primitives at the client."}{---Authors of \textup{ZooKeeper: Wait-free coordination for Internet-scale systems}}
-
-    In the simplest of terms ZooKeeper is a distributed service with the goal to assist in coordination between its clients.
+\begin{savequote}[100mm]
+...ZooKeeper, a service for coordinating processes of distributed applications. Since ZooKeeper is part of critical infrastructure, ZooKeeper aims to provide a simple and high performance kernel for building more complex coordination primitives at the client.
+\qauthor{---Authors of \textup{ZooKeeper: Wait-free coordination for Internet-scale systems}}
+\end{savequote}
 
 \chapter{Zookeeper}
+In the simplest of terms ZooKeeper is a distributed service with the goal to assist in coordination between its clients.
 \section{ZooKeeper Architecture}
 
 There are several nodes which accept requests from clients to store, update and delete data. These nodes cooperate with each other and coordinate the writes so that they contain identical copies. These nodes are called as ZooKeeper servers. When a ZooKeeper server is started it has to be provided with an id and also the addresses of the other ZooKeeper servers. 

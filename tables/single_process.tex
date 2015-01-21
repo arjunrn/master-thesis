@@ -1,0 +1,9 @@
+\begin{table}
+  \begin{tabular}{|l|c|c|}\hline%
+    Threads & ZooKeeper & ParKazoo\\\hline
+    \csvreader[late after line=\\\hline]%
+      {tables/data/scientists.csv}{threads=\threads,zookeeper=\zookeeper,parkazoo=\parkazoo}%
+      {\threads & \zookeeper & \parkazoo}%
+  \end{tabular}
+  \caption{Average Throughput for a single node with a single process}
+\end{table}

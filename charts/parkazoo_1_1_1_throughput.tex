@@ -1,0 +1,29 @@
+\begin{figure}
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+      xlabel={Time},
+      ylabel={Requests},
+      height=8cm,
+      width=0.9\textwidth,
+      cycle list name=mlineplot cycle,
+      legend columns=2,
+      enlarge y limits=0.02,
+      ymin=10,ymax=50,
+      xlabel style={name=xlabel}, % Name the xlabel node
+      legend style={
+          at={(xlabel.south)}, % Place legend relative to xlabel node
+          yshift=-1ex,
+          anchor=north,
+          legend cell align=left
+      }
+    ]
+
+    \addplot table[x=column1,y=column2] {charts/data/parkazoo_1_1_1_throughput.dat};
+    \addplot+ table[x=column1,y=column2] {charts/data/zookeeper_1_1_1_throughput.dat};
+     
+    \legend {ParKazoo, ZooKeeper}
+    \end{axis}
+  \end{tikzpicture}
+  \caption {ParKazoo Throughput}
+\end{figure}

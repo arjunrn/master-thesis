@@ -54,3 +54,12 @@
 	\newpage \lhead{} \rhead{}
 	\cfoot{\thepage}
 }
+
+\newcommand{\acknowledgments}{
+	\chapter*{Acknowledgments}
+	\noindent
+	\input{acknowledgements}
+	\vspace*{\fill} \newpage
+	\setcounter{page}{1}
+	\pagenumbering{arabic}
+}
