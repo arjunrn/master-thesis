@@ -1,0 +1,16 @@
+\begin{table}
+  \begin{tabular}{|l|c|}\hline%
+    Nodes & Average Throughput \\\hline
+    \csvreader[late after line=\\\hline]%
+      {tables/data/zookeeper_multi_node.csv}{nodes=\nodes,throughput=\throughput}%
+      {\nodes & \throughput}%
+  \end{tabular}
+  \hspace{2em}
+  \begin{tabular}{|l|c|}\hline%
+    Nodes & Average Throughput \\\hline
+    \csvreader[late after line=\\\hline]%
+      {tables/data/zookeeper_multi_node.csv}{nodes=\nodes,throughput=\throughput}%
+      {\nodes & \throughput}%
+  \end{tabular}
+  \caption{Average Throughput for a multiple client nodes with a multiple processes}
+\end{table}

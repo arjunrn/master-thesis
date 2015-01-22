@@ -1,6 +1,6 @@
 \chapter{Evaluation}
 
-The peak write throughput performance of the original ZooKeeper and ParKazoo are compared.
+The peak write throughput performance of the original ZooKeeper and ParKazoo are compared. The tests are performed on a Ganglia cluster of 50 machines. Each machine is equipped with Intel\textsuperscript{\textregistered}  Xeon\textsuperscript{\texttrademark}  E5405 CPU clocked at 2.00GHz and 8GB System Memory. All the machines have a etXtreme BCM5754 Gigabit Ethernet PCI Express network card.
 
 \section{Test Setup}
 The tests are performed on a Ganglia~\cite{sacerdoti2003wide} cluster. The Fabric library is used to for performing the tests. Fabric is a library for application deployment~\cite{spotswood2003systems} and system administration. The first step is to start the required the server set, either ZooKeeper or ParKazoo and configure them. Then the machines which make the requests are are configured next. For convenience's sake let us refer to them as \textit{Requesters}. The Requesters run a python script which forks and creates P number of slave processes. Each slave process in turn spawns T number of threads. Each threads get its own client object which it can use to make requests to the main ensemble. A ParKazoo/Kazoo barrier is used to wait for all the processes to initialize and spawn their threads. Once all the processes reach this barrier and cross the begin to execute a loop. The loops contains a \textit{create()} to create a node in the ParKazoo/ZooKeeper tree structure. Upon successful creation of the node the thread records the the current time and also the time it took to execute the operation. After that it removes the same node using the \textit{delete()} operations. After this it records the timestamps and execution time just like for the create operation. Conceptually the create and delete operations are equivalent because they both require consensus between a majority of the servers. The created nodes are not retained on the server because the performance of the cluster gradually diminishes as the amount of data it contains increases. After a prefixed amount of time has elapsed the value a node is set on the cluster. All the \textit{Requesters} have a \textit{DataWatch} on this node. When the value is set it indicates to the the \textit{Requesters} to stop executing the requests loop. After this every processes collects the timestamps-duration pair lists from every thread and writes it to disk. 
@@ -24,6 +24,10 @@ The objective of the testing process is to find the peak throughput and the late
 \input{charts/requests_65_10_15}
 
 \input{tables/single_process}
+
+\input{tables/single_node}
+
+\input{tables/multi_node}
 
 Multiple nodes make requests to the cluster or the ensemble. Each node has multiple processes and each process has in turn multiple threads. Each thread has its own Kazoo or ParKazoo client object to make requests to the servers.
 Kazoo/ParKazoo provides a recipe for barrier which is used by the clients to start making requests. All the nodes start making request when they clear the barrier. Every request is recorded with a timestamp and the time it took to complete the request. All these timestamped requests from each thread are collected and finally they are written to the disk. At the end of the run all the files containing the requests timestamp and duration are collected. They are then aggregated. They are bucketed by the to the second in which they were executed. This gives the number of requests from all the test nodes that occurred in a second. The average request rate and their latency is recorded. 

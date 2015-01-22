@@ -1,9 +1,9 @@
 \begin{figure}
   \centering
   \begin{tikzpicture}
-    \node[ultra thick, regular polygon, regular polygon sides=6, minimum width=30pt,draw, rotate=30] (reg1) at (4,8){};
-    \node[ultra thick, regular polygon, regular polygon sides=6, minimum width=30pt,draw, rotate=30] (reg1) at (0,8){};
-    \draw[ultra thick] (2,11) circle (15pt);
+    \node[thick, regular polygon, regular polygon sides=6, minimum width=30pt,draw, rotate=30, fill=TolColor4] (reg1) at (4,8){};
+    \node[thick, regular polygon, regular polygon sides=6, minimum width=30pt,draw, rotate=30, fill=TolColor4] (reg1) at (0,8){};
+    \filldraw[fill=TolColor3, draw=black, thick] (2,11) circle (15pt);
     \draw (2,10.5) -- (4,8.5);
     \draw (2,10.5) -- (0,8.5);
 
@@ -11,16 +11,16 @@
     \node at (-1.2,8) {/node1};
     \node at (2.9,8) {/node2};
     
-    \node[ultra thick, regular polygon, regular polygon sides=6, minimum width=30pt,draw, rotate=30] (reg1) at (12,8){};
-    \draw[ultra thick] (10,11) circle (15pt);
+    \node[thick, regular polygon, regular polygon sides=6, minimum width=30pt,draw, rotate=30, fill=TolColor4] (reg1) at (12,8){};
+    \filldraw[fill=TolColor3, draw=black, thick] (10,11) circle (15pt);
     \draw (10,10.5) -- (12,8.5);
     
     \node at (9.25,11) {/};
     \node at (10.9,8) {/node2};
 
-    \draw[ultra thick] (10,5) circle (15pt);
-    \draw[ultra thick] (12,2) circle (15pt);
-    \node[ultra thick, regular polygon, regular polygon sides=6, minimum width=30pt,draw, rotate=30] (reg1) at (10,-1){};
+    \filldraw[fill=TolColor3, draw=black, thick] (10,5) circle (15pt);
+    \filldraw[fill=TolColor3, draw=black, thick] (12,2) circle (15pt);
+    \node[thick, regular polygon, regular polygon sides=6, minimum width=30pt,draw, rotate=30, fill=TolColor4] (reg1) at (10,-1){};
     \draw (10,4.5) -- (12,2.5);
     \draw (12,1.5) -- (10,-0.5);
 
