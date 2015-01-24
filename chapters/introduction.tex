@@ -4,14 +4,14 @@
 
 Distributed Coordination Services are a critical component of many distributed applications. There have been several implementations of such algorithms in the past. Google published a paper on an internal service called Chubby~\cite{burrows2006chubby}. This sparked an interest in using similar services in other distributed application. ZooKeeper~\cite{hunt2010zookeeper} was developed by Yahoo to replicate some the functionality of Chubby. ZooKeeper was implemented in Java. Today it is maintained by the Apache Software Foundation. It is also a component in other distributed frameworks like Hadoop and Cassandra. There have been other implementations of coordination services like Doozer and etcd. These projects are relatively new and are based on the Raft consensus protocol which is not extensively deployed in working systems. 
 
-Everyday there are distributed applications which get larger every year. Coordination services need to keep up with this larger traffic demands. The throughput rate of ZooKeeper is limited by two main factors:
+The scale of distributed applications increase everyday. Coordination services like ZooKeeper need to keep up with this increasing traffic demands. The throughput rate of ZooKeeper is limited by three main factors:
 \begin{enumerate}
   \item Local Disk Throughput
   \item Network Speed
   \item Local Processing capacity.
 \end{enumerate}
 
-For every write operation the ZooKeeper cluster requires a consensus between all member nodes to reply. This slows down the response time. However the reads can be scaled only by increasing the number of members participating in the consensus, i.e. the number of ZooKeeper servers. These competing but opposing forces makes scaling ZooKeeper difficult. 
+For every write operation the ZooKeeper cluster requires a consensus between a quorum number of member nodes which agree on the proposed update, process it and finally acknowledge that they have committed the change. This slows down the response time. However the number of connected clients can be scaled only by increasing the number of servers in the ZooKeeper cluster, i.e. the number of nodes participating in the consensus. These competing but opposing forces makes scaling ZooKeeper difficult. 
 
 We try to solve these problem by partitioning the namespace which would be normally held by a single cluster and distributing them among a number of ZooKeeper clusters. We also implement this solution completely on the client-side, so this does not necessitate any modification to the the ZooKeeper source code. The client library is implemented in such a way that the consistency properties of ZooKeeper are also upheld.
 
