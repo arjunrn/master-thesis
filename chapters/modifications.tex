@@ -11,7 +11,9 @@
     The information about all the clusters are stored on every cluster. When the client has to be initialized only one of the server addresses has to be provided. The client connects to the server, reads the information about all the clusters and then initializes the clients with information about all the individual clusters.
 
 \section{ParKazoo Operations}
+Every parkazoo operation consists of some Kazoo operations wrapped in a single ParKazoo operation. Figure ~\ref{fig:ParKazooAlgo} depicts the basic algorithm which is common to all ParKazoo operations.
 
+\input{diagrams/parkazoo_algo.tex}
 
 \subsection{Node Creation}
 Before a node is created the parent needs to be checked. If the parent is an ephemeral node then an error is reported. The cluster of the parent node is obvious from the path of the child node. The call to create the node also contains flags to indicate if the node is an ephemeral node and/or a sequential node. If the node doesn't exist then a the path of nodes up to that point are also created.

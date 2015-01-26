@@ -34,7 +34,7 @@ ZooKeeper data is presented like a UNIX file system. There are no files and dire
 \input{diagrams/zookeeper_data}
 \vspace{1.5em}
 
-ZooKeeper has two types of znodes, regular and ephemeral znodes. Ephemeral znodes are present only as long at the client which created them is connected. If the connection drops or the client crashes causing the connection to drop the the ephemeral znode is deleted. Ephemeral znodes also are different because they cannot have child znodes. Attempting to create a child znode for an ephemeral znode throws an exception. Regular znodes are persisted across sessions. There are also sequential znodes which have a counter appended to the name. Sequential znodes are created by setting the \textit{sequential} flag to true while creating the node. All sequential nodes have the same name along with an incrementing value appended to the name as sequential znodes are created. Znodes can also be both sequential and emphemeral in which case the nodes have a counter value appended to the end of names and they are deleted when the client which created them is disconnected.
+ZooKeeper has two types of znodes, regular and ephemeral znodes. Ephemeral znodes are present only as long at the client which created them is connected. If the connection drops or the client crashes causing the connection to drop the the ephemeral znode is deleted. Ephemeral znodes also are different because they cannot have child znodes. Attempting to create a child znode for an ephemeral znode throws an exception. Regular znodes are persisted across sessions. There are also sequential znodes which have a counter appended to their names. Sequential znodes are created by setting the \textit{sequential} flag to true while creating the node. All sequential nodes which are siblings and have the same name have an incrementing value appended to the name as sequential znodes are created. Znodes can also be both sequential and ephemeral in which case the znodes have a counter value appended to the end of names and they are deleted when the client which created them is disconnected.
 
 \subsection{ZooKeeper Guarantees}
 ZooKeeper has two ordering guarantees:
@@ -42,29 +42,47 @@ ZooKeeper has two ordering guarantees:
 	\item \textbf{Linearisable Writes:} All the update operations on the cluster can be serialised and they respect precedence.
 	\item \textbf{Client FIFO Order:} All operations from a client are executed in the order they were sent from the client.
 \end{enumerate}
-ZooKeeper also has the following \textit{Liveness} and \textit{Durability} guarantees: As long as a quorum of servers are available the service can accepts and commit requests. Any previously committed changes will be always present as long as a quorum of servers are available.
+ZooKeeper also has the following \textit{Liveness} and \textit{Durability} guarantees: As long as a quorum of servers are available the service can accept, process and commit requests. Any previously committed changes will be always present as long as a quorum of servers are available.
 
 \subsection{Cluster Reconfiguration}
-	The current version of ZooKeeper cannot be reconfigured dynamically. To add more servers to a cluster the cluster has to be stopped. The new servers have to be added to the configuration of the cluster members and then finally the cluster has to be restarted. This entails downtime but it is importance that new servers be added dynamically to balance load and to replaces servers which have crashed. By utilizing some of the properties of the ZooKeeper system a reconfiguration method~\cite{shraer2012dynamic} was proposed which can rebalance the clients dynamically and migrate the data without shutting down the cluster.
+	The current version of ZooKeeper cannot be reconfigured dynamically. To add more servers to a cluster the cluster has to be first stopped. The new servers have to be added to the configuration of the cluster members and then finally the cluster has to be restarted. This is a manual process which is prone to errors and can cause down-time due to misconfiguration or split brain. This entails downtime. But it is also important that new servers be added dynamically to balance load and to replaces servers which have crashed. By utilizing some of the properties of the ZooKeeper system a reconfiguration method~\cite{shraer2012dynamic} was proposed which can rebalance the clients dynamically and migrate the data without shutting down the cluster.
 
 \subsection{Why not a Distributed Database?}
-At a first glance, it may appear that a Distributed Database like Cassandra or BigTable, HBase may solve this problem. However these databases are actually built using a distributed co-ordination service like ZooKeeper. ZooKeeper which is maintained by the Apache Foundation is used as a component in Cassandra. Similarly Chubby which was developed as a co-ordination service by Google is used in GFS and BigTable.
+At a first glance, it may appear that a Distributed Database like Cassandra or BigTable, HBase may solve this coordination problem. However these databases are actually built using a distributed co-ordination service like ZooKeeper. ZooKeeper which is maintained by the Apache Foundation is used as a component in Cassandra. Similarly Chubby which was developed as a co-ordination service by Google is used in GFS and BigTable.
 
 \section{Kazoo Library}
-Since the connections are made through TCP there are several languages which have libraries to communicate with ZooKeeper. The Python~\cite{van2002python} library which is provided with the ZooKeeper package is quite small but contains limited features. Kazoo is a Python library which contains many features which are inspired from Netflix's Curator. It is a pure Python implementation which means that it doesn't have any external C dependencies It has support for older version of ZooKeeper viz. 3.4 and 3.3. It has also support for evented IO through gevent. It also provides many higher order primitives like Watchers, Locks, Barriers. For these reason Kazoo is used as the base for the ParKazoo library. ParKazoo tries to maintain the same API as Kazoo. It can be in fact for most applications be used as a drop-in replacement for Kazoo.
+Since the connections are made through TCP there are several languages which have libraries to communicate with ZooKeeper. The Python~\cite{van2002python} library which is provided with the ZooKeeper package is quite small and contains limited features. Kazoo is a Python library which contains many features which are borrowed from Netflix's Curator. It is a pure Python implementation which means that it doesn't have any external C dependencies. It has support for older version of ZooKeeper viz. 3.4 and 3.3. It has also support for evented IO through gevent. It also provides many higher order primitives like Watchers, Locks, Barriers. For these reason Kazoo is used as the base for the ParKazoo library. ParKazoo tries to maintain the same API as Kazoo. It can be in fact for most applications be used as a drop-in replacement for Kazoo.
 
 \subsection{Library API}
 The Kazoo library provides the following functions. Some of these are also present in the standard Python library included in the ZooKeeper package. They are:
+  \subsubsection{Initialization of Kazoo}
+  	\begin{lstlisting}
+  		def __init__(hosts, timeout=10.0, randomize_hosts=True)
+  	\end{lstlisting}
+
+  \subsubsection{Sync Operations}
+  	\begin{lstlisting}
+  		def sync(path)
+  	\end{lstlisting}
+
+  \subsubsection{Server Commands}
+  	\begin{lstlisting}
+  		def command(cmd='ruok')
+  	\end{lstlisting}
+
+
   \subsubsection{Create Node}
   \begin{lstlisting}
-    def create(path, value, make_path=False, watch=None)
+    def create(path, value, ephemeral=True, sequential=True, make_path=False, watch=None)
   \end{lstlisting}
-  This call creates a node in the tree structure. The path indicates the path of the node, the value is byte array containing the data to be stored. make\_path indicates if the the full path has to be created along with the parents of the node if they do not yet exists. The watch parameter leaves a watch on the node which calls a function when the node is modified. The type of change event and the corresponding new data is passed as an argument to the watch function.
+  This call creates a znode in the tree structure. The \textit{path} argument indicates the path of the node, the value is byte array containing the data to be stored. \textit{make\_path} indicates if the the ancestor znodes should also be created if they do not yet exists. The watch parameter leaves a watch on the node which calls a function when the node is modified. The type of change event and the corresponding new data is passed as an argument to the watch function. The \textit{sequential} and \textit{ephemeral} flags indicate if the znode to be created should be of those corresponding types.
+  
   \subsubsection{Read a Node}
   \begin{lstlisting}
     def get(path, watch=None)
   \end{lstlisting}
   Fetching the data is possible when the node is present in the data tree. If the node does not exist then a corresponding error is thrown. Also the watch argument can be used to leave a watch on the node which is triggered when the node is modified.
+  
   \subsubsection{Deleting a Node}
   \begin{lstlisting}
     def delete(path, recursive=False)

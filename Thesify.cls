@@ -51,8 +51,6 @@
 
 
 \defaultfontfeatures{Mapping=tex-text}
-\newfontfamily{\smallcaps}[RawFeature={+c2sc,+scmp}]{EB Garamond}
-\setromanfont[Numbers=OldStyle, Ligatures={Common}]{EB Garamond}
 \setsansfont[Scale=MatchLowercase, BoldFont={Lato Bold}]{Lato Regular}
 \setmonofont[Scale=MatchLowercase]{Luxi Mono}
 
@@ -66,12 +64,6 @@
 
 \renewcommand{\thefootnote}{\fnsymbol{footnote}}
 
-% \RequirePackage{fontspec} %Not in the original Dissertate.cls file, maybe provided through some other package.
-% \defaultfontfeatures{Mapping=tex-text}
-% \newfontfamily{\smallcaps}[RawFeature={+c2sc,+scmp}]{Lato}
-% \setromanfont[Numbers=OldStyle, Ligatures={Common}]{EB Garamond}
-% \setsansfont[Scale=MatchLowercase, BoldFont={Lato Bold}]{Lato Regular}
-% \setmonofont[Scale=MatchLowercase]{Luxi Mono}
 \newfontfamily\listingsfont[Scale=0.8]{Luxi Mono}
 
 % an environment for paragraph-style section
@@ -136,3 +128,16 @@
   {TolColor4, mark=triangle*, mark size=1.5pt},
   {TolColor7, mark=diamond*, mark size=1.5pt},
 }
+
+\RequirePackage{tikz}
+\usetikzlibrary{arrows}
+
+%{{{ --- flowchart nodes
+\tikzstyle{startstop} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm,text centered, draw=black, fill=TolColor6!30]
+\tikzstyle{io} = [trapezium, trapezium left angle=70, trapezium right angle=110, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=TolColor10!30]
+\tikzstyle{process} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=TolColor5!30]
+\tikzstyle{decision} = [diamond, minimum width=3cm, minimum height=1cm, text centered,text width=1.5cm, draw=black, fill=TolColor2!30]
+\tikzstyle{arrow} = [thick,->,>=stealth]
+
+
+
