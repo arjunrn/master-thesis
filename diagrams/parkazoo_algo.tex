@@ -1,6 +1,5 @@
 \begin{figure}
-	\centering
-	\begin{tikzpicture}[node distance=2cm]
+	\begin{tikzpicture}[node distance=1.5cm]
 		\node (start) [startstop] {Start};
 		\node (in1) [io, below of=start] {Input \textit{node\_path}, \textit{operation}};
 		\draw [arrow] (start) -- (in1);
@@ -11,7 +10,7 @@
 		\node (decision_exists) [decision, below of=mapping, node distance=3cm] {\textit{PNode} exists?};
 		\draw [arrow] (mapping) -- (decision_exists);
 		
-		\node (decision_create) [decision, right of=decision_exists, node distance=5cm] {Should create?};
+		\node (decision_create) [decision, right of=decision_exists, node distance=4cm] {Should create?};
 		\draw [arrow] (decision_exists) -- (decision_create);
 		
 		\node (d_should_create) [decision, below of=decision_create, node distance=4cm] {Can create?};
@@ -20,7 +19,7 @@
 		\node (create_path) [process, below of=d_should_create, node distance=3cm] {Create parent};
 		\draw [arrow] (d_should_create) -- (create_path);
 		
-		\node (perform_operation) [process, left of=create_path, node distance=5cm] {Perform Operation};
+		\node (perform_operation) [process, left of=create_path, node distance=4cm] {Perform Operation};
 		\draw [arrow] (create_path) -- (perform_operation);
 		\draw [arrow] (decision_exists) -- (perform_operation);
 		
@@ -30,7 +29,7 @@
 		\node (end) [startstop, below of=op_result] {Stop};
 		\draw [arrow] (op_result) -- (end);
 		
-		\node (error_result) [io, right of=d_should_create, node distance=5cm] {Error Result};
+		\node (error_result) [io, right of=d_should_create, node distance=4cm] {Error Result};
 		\draw [arrow] (d_should_create) -- (error_result);
 		\path [arrow, draw] (decision_create) -| (error_result);
 		\path [arrow, draw] (error_result) |- (end);

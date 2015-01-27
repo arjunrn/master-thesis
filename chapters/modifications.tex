@@ -1,14 +1,15 @@
 \chapter{Implementation}
 
 \section{ParKazoo Architecture}
-  The entire ParKazoo server set is called a ParKazoo ensemble. An ensemble contains multiple ZooKeeper clusters. When a client wants to connect to a ParKazoo ensemble it has to find the information about all the clusters. If the information about all the clusters are not given to the client then the client cannot function correctly. For this reason information about all the clusters needs to be stored centrally where it is accessible to all clients. Future versions of ZooKeeper will support reconfiguration of the clusters during runtime. If one of the constituent ZooKeeper clusters is used to store the information about the configuration of the ensemble, then the ParKazoo client can watch for changes to the configuration data. When one of the constituent clusters is reconfigured, the ParKazoo client can automatically reconfigure itself when it is notified of the change. 
+  The entire ParKazoo server set is called a ParKazoo ensemble. An ensemble contains multiple ZooKeeper clusters. When a client wants to connect to a ParKazoo ensemble it has to know the addresses of all the clusters, which could be all the servers of the cluster or a subset. If the information about all the clusters are not given to the client then the client cannot function correctly. For this reason the addresses of servers in the clusters needs to be stored centrally where it is accessible to all clients. Future versions of ZooKeeper will support reconfiguration of the clusters during runtime. If one of the constituent ZooKeeper clusters is used to store the information about the configuration of the ensemble, then the ParKazoo client can watch for changes to the configuration data. When one of the constituent clusters is reconfigured, the ParKazoo client can automatically reconfigure itself when it is notified of the change. 
 
 \addvspace{1em}
 \input{diagrams/parkazoo}
 \addvspace{1em}
-  
+  	Figure ~\ref{fig:ParKazooArchitecture} depicts a ParKazoo ensemble with three clusters, with each cluster having three servers. All the clients are connected to all the cluster. However each client is connected to only one server in the cluster.
+  	
 \section{Client Initialization}
-    The information about all the clusters are stored on every cluster. When the client has to be initialized only one of the server addresses has to be provided. The client connects to the server, reads the information about all the clusters and then initializes the clients with information about all the individual clusters.
+    The information about all the clusters are stored on every cluster or on one main cluster. When the client has to be initialized only one of the server addresses has to be provided. The client connects to the server, reads the information about all the clusters and then initializes the individual Kazoo clients with the addresses of all the individual clusters.
 
 \section{ParKazoo Operations}
 Every parkazoo operation consists of some Kazoo operations wrapped in a single ParKazoo operation. Figure ~\ref{fig:ParKazooAlgo} depicts the basic algorithm which is common to all ParKazoo operations.
@@ -17,6 +18,9 @@ Every parkazoo operation consists of some Kazoo operations wrapped in a single P
 
 \subsection{Node Creation}
 Before a node is created the parent needs to be checked. If the parent is an ephemeral node then an error is reported. The cluster of the parent node is obvious from the path of the child node. The call to create the node also contains flags to indicate if the node is an ephemeral node and/or a sequential node. If the node doesn't exist then a the path of nodes up to that point are also created.
+
+\vspace{1.5em}
+\input{diagrams/parkazoo_operations/creation}
 
 \begin{lstlisting}
   def create(self, path, value=b"empty", ephemeral=False, sequence=False, makepath=False, acl=None):
@@ -33,10 +37,7 @@ Before a node is created the parent needs to be checked. If the parent is an eph
     return cluster.create(path, value=value, ephemeral=ephemeral, sequence=sequence, makepath=makepath, acl=acl)
 \end{lstlisting}
 
-\input{diagrams/parkazoo_operations/creation}
-
-The figure above shows the steps in the creation of a node. The node to be created /node2/child1. The node \textit{child1} and its parent \textit{node2} maybe present on 2 different clusters. If the make\_path argument is not set to True then the parent node node2 should exist. The destination cluster of child1 maybe different from its parent node2. In that case the node2 needs to be created on the destination cluster in the first step. This is done with the ensure\_path call. Then the node is created with the create call.
-
+The figure above shows the steps in the creation of a node. The node to be created \textit{/node2/child1}. The node \textit{child1} and its parent \textit{node2} maybe present on 2 different clusters. If the \textit{make\_path} argument is not set to True then the parent node \textit{node2} should exist. The destination cluster of \textit{child1} maybe different from its parent \textit{node2}. In that case the \textit{node2} needs to be created on the destination cluster in the first step. This is done with the \textit{makepath} argument. Then the node is created with the create call.
 
 \subsection{Ensuring Path}
 The Kazoo library provides an API call to ensure that a path exists. If the path does not exist then it is created recursively. This approach is also used in ParKazoo.
@@ -55,8 +56,7 @@ def ensure_path(self, path, acl=None):
 
   clusters = self._get_path_clients(path)
   cluster = self._hash_function(clusters, path)
-  ensured = cluster.ensure_path(path, acl)
-  return ensured
+  return cluster.ensure_path(path, acl)
 \end{lstlisting}
 
 \subsection{Check for Node Existence}
@@ -66,12 +66,7 @@ The original functionality from Kazoo is reused after it has been wrapped in the
   def exists(self, path, watch=None):
     clusters = self._get_path_clients(path)
     cluster = self._hash_function(clusters, path)
-    exists = cluster.exists(path, watch)
-    if exists:
-        self.logger.debug('Path:%s exists on cluster num: %d' % (path, clusters.index(cluster)))
-    else:
-        self.logger.debug('Path:%s not available on cluster num: %d' % (path, clusters.index(cluster)))
-    return exists
+    return cluster.exists(path, watch)
 \end{lstlisting}
 
 \subsection{Getting Node Data}
@@ -96,7 +91,7 @@ To set the value of a node find the cluster to which the node is mapped. Then us
 \end{lstlisting}
 
 \subsection{Finding children of a Node}
-    First the cluster on which the children can be found is called. The we check if the parent node exists on it's own cluster. If it does but has no child nodes then querying directly on the cluster for the children nodes will throw an exception. We also ensure the path in case of future requests.
+    First the cluster on which the children can be found is called. Then we check if the parent node exists on it's own cluster. If it does but has no child nodes then querying directly on the cluster for the children nodes will throw an exception. We also ensure the path in case of future requests.
 
 \begin{lstlisting}
   def get_children(self, path, watch=None, include_data=False):
@@ -104,24 +99,39 @@ To set the value of a node find the cluster to which the node is mapped. Then us
     clusters = self._get_path_clients(path)
     full_path = _prefix_root(self.chroot, path)
     full_path = '%s/' % full_path if not full_path.endswith('/') else full_path
-    children_cluster = clusters[abs(hash(full_path)) % len(clusters)]
-    self.logger.debug('Checking for children on cluster: %d' % clusters.index(children_cluster))
+    hashobj = hashlib.md5()
+    hashobj.update(full_path.encode('UTF-8'))
+    value = int(hashobj.hexdigest(), 16)
+    selected_cluster = value % len(sorted(self.c.items()))
+    clusters = self._get_path_clients(path)
+    children_cluster = clusters[selected_cluster]
     try:
-        return children_cluster.get_children(path, watch=watch, include_data=include_data)
+       return children_cluster.get_children(path, watch=watch, include_data=include_data)
     except NoNodeError:
-        if node_exists:
-            children_cluster.ensure_path(path)
-            return children_cluster.get_children(path, watch=watch, include_data=include_data)
-        else:
-            raise
+       if node_exists:
+           children_cluster.ensure_path(path)
+           return children_cluster.get_children(path, watch=watch, include_data=include_data)
+       else:
+           raise
 \end{lstlisting}
 
 \input{diagrams/parkazoo_operations/get_children}
 
-In the above figure a query to the node \textit{/node2} to find the children. They children of \textit{/node2} maybe present on another cluster. In that case the parent node's existence has to be confirmed on the destination cluster. If the node does not exist then it has to be created. This is done so that watches can be left on the node in case nodes are created later.
+In the above figure a query to the node \textit{/node2} to find the children. They children of \textit{/node2} maybe present on another cluster. In that case the parent node's existence has to be confirmed on the destination cluster. If the node does not exist then it has to be created. This is done so that watches can be left on the node in case nodes are created later. The the \textit{/node2} is queried on the destination cluster.
 
 \subsection{Transactions}
-Transactions are used on ZooKeeper to speed up a sequence of operations. Either all the operations of a transaction are committed or the whole transaction is rolled back. This ensure that operations can be completed because only a single consensus is required to complete the whole transaction rather than an individual consensus for each transaction.\\
-    But in a distributed setup we can ensure that the transaction only if it operates on the same cluster. Although this appears to be a substantial disadvantage, most transactions operate on sibling nodes. Since all siblings are present on the same cluster in the case of strong consistency transactions can still be used to process the operations. In fact, most complex recipes like Locks, Barriers, Double Barriers which use transactions can still continue operating with this limitation.
-    To implement the transaction the original Kazoo Transaction object is wrapped with some verification logic. Every time an operation is added to the transaction the cluster corresponding to that operation is noted. Before the commit occurs the list of clusters is verified so that it contains only a single cluster.
+Transactions are used on ZooKeeper to speed up a sequence of operations. Either all the operations of a transaction are committed or the whole transaction is rolled back. This ensures that operations can be completed because only a single consensus is required to complete the whole transaction rather than an individual consensus for each operation in the transaction.
     
+    But in a ParKazoo ensemble there are multiple clusters and it's not possible to perform a consensus where the transaction is operating on znodes which are present on different clusters. Although this appears to be a substantial disadvantage, most transactions operate on sibling nodes. Later in the evaluation of the recipes we show these transactions are still used. Since all siblings are present on the same cluster in the case of strong consistency transactions can still be used to process the operations. In fact, most complex recipes like Locks, Barriers, Double Barriers which use transactions can still continue operating with this limitation.
+    
+    To implement the transaction the original Kazoo Transaction object is wrapped with some verification logic that ensures the operations of the transaction are all operating on the same cluster. Every time an operation is added to the transaction the cluster corresponding to that operation is noted. Before the commit occurs the list of clusters is verified so that it contains only a single cluster.
+    
+    The \textit{Transaction} object provides the following operations:
+    \begin{itemize}
+	  \item \lstinline | def create(path, value='', ephemeral=False, sequence=False) |
+	  \item \lstinline | def delete(path, version=-1) |
+	  \item \lstinline | def set_data(path, value, version=-1) |
+	  \item \lstinline | def check(path, version) |
+	  \item \lstinline | def commit_async() |
+	  \item \lstinline | def commit() |
+	\end{itemize}

@@ -5,6 +5,7 @@
 Distributed Coordination Services are a critical component of many distributed applications. There have been several implementations of such algorithms in the past. Google published a paper on an internal service called Chubby~\cite{burrows2006chubby}. This sparked an interest in using similar services in other distributed application. ZooKeeper~\cite{hunt2010zookeeper} was developed by Yahoo to replicate some the functionality of Chubby. ZooKeeper was implemented in Java. Today it is maintained by the Apache Software Foundation. It is also a component in other distributed frameworks like Hadoop and Cassandra. There have been other implementations of coordination services like Doozer and etcd. These projects are relatively new and are based on the Raft consensus protocol which is not extensively deployed in working systems. 
 
 The scale of distributed applications increase everyday. Coordination services like ZooKeeper need to keep up with this increasing traffic demands. The throughput rate of ZooKeeper is limited by three main factors:
+
 \begin{enumerate}
   \item Local Disk Throughput
   \item Network Speed

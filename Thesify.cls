@@ -11,7 +11,7 @@
 
 \def\advisor#1{\gdef\@advisor{#1}}
 \def\author#1{\gdef\@author{#1}}
-\RequirePackage{color}
+\RequirePackage{xcolor}
 \usepackage{hyperref}
 \RequirePackage[tiny, md, sc]{titlesec}
 \setlength{\headheight}{15pt}
@@ -20,7 +20,6 @@
 \RequirePackage[palatino]{quotchap}
 
 
-\RequirePackage{color}
 \RequirePackage{packages/style}
 \RequirePackage[width=5.75in, letterpaper]{geometry}
 \RequirePackage{fancyhdr}
@@ -99,8 +98,6 @@
 
 
 %{{{ --- pgfplots ---------------------
-\RequirePackage{color}
-\RequirePackage{xcolor}
 \RequirePackage{pgfplots}
 \RequirePackage{pgfplotstable}
 %{{{ Colors

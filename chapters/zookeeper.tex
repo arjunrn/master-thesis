@@ -59,17 +59,19 @@ The Kazoo library provides the following functions. Some of these are also prese
   	\begin{lstlisting}
   		def __init__(hosts, timeout=10.0, randomize_hosts=True)
   	\end{lstlisting}
+  	To initialize a \textit{Kazoo} client object we need a list of server addresses to which the client can connect. This is provided as a Python \textit{list} of \textit{string}s. The \textit{timeout} argument specifies how long before the client should throw an \textit{Exception} when it cannot connect to the servers. The \textit{randomize\_hosts} indicates if random a server from the list should be selected or the first server should be chosen.
 
   \subsubsection{Sync Operations}
   	\begin{lstlisting}
   		def sync(path)
   	\end{lstlisting}
+  	All if a client wants to perform a read operation on a znode but it wants all the pending operations on that znode to be synchronized first, it calls the \textit{sync} operation on that path. A sync is like a partial update operation. It does not require a consensus between the servers. But it must be sent to the leader and wait till all operation on that path are processed and committed. 
 
   \subsubsection{Server Commands}
   	\begin{lstlisting}
   		def command(cmd='ruok')
   	\end{lstlisting}
-
+  	ZooKeeper servers provide administration commands which can be used to obtains information about the configuration, the performance statistics or reset the statistics. There are also commands to list the currently connected commands and the watches present on the znodes. These commands are can be run from the client by using the \textit{command} operation.
 
   \subsubsection{Create Node}
   \begin{lstlisting}
@@ -81,38 +83,49 @@ The Kazoo library provides the following functions. Some of these are also prese
   \begin{lstlisting}
     def get(path, watch=None)
   \end{lstlisting}
-  Fetching the data is possible when the node is present in the data tree. If the node does not exist then a corresponding error is thrown. Also the watch argument can be used to leave a watch on the node which is triggered when the node is modified.
+  Fetching the data is possible when the znode is present in the data tree. If the znode does not exist then an \textit{Exception} indicating this is thrown. Also the watch argument can be used to leave a watch on the znode which is triggered when the znode is modified.
   
   \subsubsection{Deleting a Node}
   \begin{lstlisting}
     def delete(path, recursive=False)
   \end{lstlisting}
-  If the node has children then the node can be deleted by setting the recursive argument to True. Otherwise the delete call throws an exception which indicates that the node is not empty.
+  If the node has children then the znode can be deleted by setting the \textit{recursive} argument to True. Otherwise the delete call throws an exception which indicates that the znode is not empty.
   
   \subsubsection{Getting Children of a Node}
   \begin{lstlisting}
     def get_children(path, watch=None, include_data=False)
   \end{lstlisting}
-  To list all the children of a node this call is used. It can also set a watch which notifies the client when new nodes are created below the node in question. By default, this call only returns the names of the child nodes. If the data of this node is also required then the include\_data parameter should be set to True.
+  This call is used to retrieve all the the children of a znode. It can also set a watch which notifies the client when new znodes are created below the znode in question. By default, this call only returns the names of the child nodes. If the data of the child znodes is also required then the \textit{include\_data} parameter should be set to \textit{True}.
   
-  These are only some of the operations which are provided by the Kazoo library. The ones listed above are used as primitives in the construction of the ParKazoo library. There are also corresponding asynchronous function calls for each of these. The difference between them is that the asynchronous call does not immediately return the result. It instead returns a deferred object which can be used to notify the application when the result is ready. The is mostly used in single threaded evented programs.
+  These are only some of the operations which are provided by the Kazoo library. The ones listed above are used as primitives in the construction of the ParKazoo library. There are also corresponding asynchronous function calls for each of these. The difference between the synchronous and asynchronous versions of ZooKeeper operations are that the client blocks until the result of the operation is return. In the case of synchronous operation the function call instead returns a deferred object which can be used to notify the application when the result is ready. The is mostly used in single threaded evented programs.
   
 \subsection{Library Recipes}
-  ZooKeeper was designed to be simple. It does not provide higher order constructs like locks, queues or counters. It only provides the basic primitives which can be used to construct such functions. However the Kazoo library includes in itself some of the higher level constructs which can be used by the application programmer. Some of them are listed below.
+  ZooKeeper was designed to be simple and does not directly implement complex synchronisation and coordination mechanisms generally required by most application. It does not provide higher order constructs like locks, queues or counters. However the lower order primitives can be used to construct such functions. The Kazoo library includes in itself some of the higher level constructs which can be used by the application programmer. Some of them are listed below. There constructs are also later implemented in the ParKazoo library without much change from their original Kazoo implementations.
+  
   \subsubsection{Barrier}
-    Barriers are synchronization mechanisms. Multiple ZooKeeper clients which have a common barrier will all block on the barrier until all the other clients with the same barrier also wait on it. Double Barrier is also implemented which also the start and end of a distributed task to be synchronized.
+    Barriers are synchronization mechanisms for concurrent threads of execution. Multiple ZooKeeper clients which have a common barrier will all block on the barrier until a certain condition is met and the barrier is removed programatically. Double barriers can be used to synchronized the beginning and the end of a distributed asynchronous task. Double barriers differ from regular barrier because they wait for a predetermined number of clients to arrive at the barrier. When the number of clients is reach all of them cross the barrier together. When the barrier section is complete the same process occurs when the clients are leaving the barrier.
+  
   \subsubsection{Counter}
-  This is a synchronized counter which allows multiple nodes to share a counter value. A Counter type object can be used directly with the plus and minus operators.
+  This is a race-free counter which allows multiple nodes to share a counter value. A Counter type object can be used directly with the plus and minus operators in the Python application. Only integer and float values are permitted.
+  
   \subsubsection{Election}
-  Multiple nodes can participate in election to become the leader. This construct allows the client to participate and then call a function when the client wins the election. There is also functionality to query for all the contenders in the election.
+  When multiple clients want to perform a distributed task which requires one of the to be a leader/primary they can use the Election construct. ZooKeeper will then elect one of the participating clients as the leader and this client will be notified through a callback function which was passed to the \textit{Election} object when it was created. This construct also provides the functionality to query for all the client participating in the contest to be the leader.
+  
   \subsubsection{Locks}
-    Locks are another synchronization mechanism. Only one client can acquire the lock. If the lock cannot be acquired then the client blocks till the lock is acquired. The acquirement of the lock can be also canceled Also all the contenders for the lock can be queried. Kazoo also provides Semaphore objects which are similar to the python Semaphores in the threading module. The Kazoo Semaphore object can be initialized with an initial count which indicates the number of available resources. Whenever one of the clients acquires the semaphore then the count is decremented. This way the number of client accessing the distributed resource can be regulated.
+    Locks are the most commonly used synchronization mechanism used in concurrent programs. Only one client can acquire the lock and hold it at any point of time. ZooKeeper does not provide mandatory locks. Advisory locks are implemented in the Kazoo libary. A lock can be created by a client on a specific znode. Subsequently any number of clients can compete to acquire the lock. If the lock cannot be acquired then the client blocks till the lock is acquired. The acquirement of the lock can be also canceled at any point before acquisition. Also all the contenders for the lock can be queried. 
+    
+    Kazoo also provides ~\textit{Semaphore} objects which are similar to the python Semaphores in the ~\textit{threading} module~\cite{pythonSemaphore}. Semaphore are similar to locks but also allow multiple client to hold the Semaphore. The Kazoo Semaphore object can be initialized with an initial count which indicates the number of available resources. Whenever one of the clients acquires the semaphore then the count is decremented. This way the number of client accessing the distributed resource can be regulated. Once a client is done with a Semaphore then it releases it. Only as many number of clients which will fit into the Semaphore are then notified. This prevents the ZooKeeper servers from being overwhelmed with requests to acquire the Semaphore.
+  
   \subsubsection{Partitioner}
-  This construct is used to divide the members of a set among the members of a party, such that every member receives zero or more items and each item is only given to one member. This is generally used to divide tasks among distributed client nodes.
+  This construct is used to divide the members of a set among the members of a party, such that every member receives zero or more items of and each item is only given to one member. This is generally used to divide tasks among distributed clients.
+  
   \subsubsection{Party}
     Parties are used to keep a registry of nodes. Client nodes may enter or leave a Party which updates the membership registry of the party.
-  \subsubsection{Queue}
-    Kazoo supports simple Queues and a improved implementation called LockingQueue which provides locking and priority support. The simple Queue can be used to add items into the queue. The consumers of the queue can remove items from the queue. However if the the consumer client which acquired an item from the node crashes then the queue item is lost even though it might not have been processed. The LockingQueue provides items to consumers but does not remove the item from the queue. It creates an ephemeral node corresponding to the item which indicates that the item is being processed. In case the consumer client crashes then the ephemeral node is deleted and another consumer client can acquire the item. Once the consumer finishes processing the item it should explicitly inform the queue that it has processed the queue item at which time the queue removes the item from the queue.
-  \subsubsection{Watchers}
-  A client may need to watch for only certain types of changes to a node, such as the data of the node or its children. The watches left on the nodes by the client calls like get, get\_children or set are triggered whenever the node is updates irrespective of the type of event. The watchers provide more fine grained control. They can also be disabled by returning a False Boolean function from the callback function.
   
+  \subsubsection{Queue}
+    Kazoo supports simple \textit{Queue}s and a improved implementation called ~\textit{LockingQueue} which provides locking and priority support. The simple Queue can be used to add items into the queue. The consumers of the queue can remove items from the queue. However if the the consumer client which acquired an item from the Queue crashes then the queue item is lost even though it might not have been processed. The LockingQueue provides items to consumers but does not remove the item from the queue. It creates an ephemeral node corresponding to the item which indicates that the item is being processed. In case the consumer client crashes then the ephemeral znode is deleted and another consumer client can acquire the item. Once the consumer finishes processing the item it should explicitly inform the LockingQueue that it has processed the queue item at which time the queue removes the item from the queue.
+  
+  \subsubsection{Watchers}
+  A client may need to watch for only certain types of changes to a znode, such as changes to the data of the node or its children. The watches left on the znodes by the client calls like get, get\_children or set are triggered whenever the znode is updates irrespective of the type of event. The watchers provide more fine grained control. They can also be disabled by returning a False Boolean function from the callback function.
+  
+  \subsection{Transactions}
