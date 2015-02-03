@@ -136,5 +136,5 @@
 \tikzstyle{decision} = [diamond, minimum width=3cm, minimum height=1cm, text centered,text width=1.5cm, draw=black, fill=TolColor2!30]
 \tikzstyle{arrow} = [thick,->,>=stealth]
 
-
-
+\RequirePackage{caption}
+\RequirePackage{subcaption}

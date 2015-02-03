@@ -1,40 +1,53 @@
-\begin{figure}
-  \begin{tikzpicture}
-    \begin{axis}[
-      ybar,
-      ymin=0,
-      xmax=2
-    ]
-      \addplot+ [
-        TolColor1,
-        hist={
-            bins=50,
-            data min=0.2,
-            data max=1.8
-        },
-        fill=TolColor3 
-      ]  
-     table[y index=0] {charts/data/zookeeper_65_10_15_requests.dat};
-    \end{axis}
-  \end{tikzpicture}
-  
-  \begin{tikzpicture}
-    \begin{axis}[
-      ybar,
-      ymin=0,
-      xmax=2,
-    ]
-      \addplot+ [
-        TolColor1,
-        hist={
-            bins=50,
-            data min=0.2,
-            data max=2.2
-        },
-        fill=TolColor3 
-      ]  
-     table[y index=0] {charts/data/parkazoo_65_10_17_requests.dat};
-    \end{axis}
-  \end{tikzpicture}
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}[t]{.45\textwidth}
+	  \centering
+	  \begin{tikzpicture}
+		\begin{axis}[
+	      ybar,
+	      ymin=0,
+	      xmax=2
+	    ]
+	      \addplot+ [
+	        TolColor1,
+	        hist={
+				bins=40,
+	            data min=0.2,
+	            data max=1.8
+	        },
+	        fill=TolColor3 
+	      ]  
+	     table[y index=0] {charts/data/zookeeper_65_10_15_requests.dat};
+	    \end{axis}
+	  \end{tikzpicture}
+	  \caption{ZooKeeper Latencies}
+	  \label{chart:zk_max_latency}
+  \end{subfigure}
+  \quad
+  \hspace{2em}
+  \begin{subfigure}[t]{.45\textwidth}
+	  \centering
+	  \begin{tikzpicture}
+	    \begin{axis}[
+	      ybar,
+	      ymin=0,
+	      xmax=2,
+	    ]
+	      \addplot+ [
+	        TolColor1,
+	        hist={
+	            bins=40,
+	            data min=0.2,
+	            data max=2.2
+	        },
+	        fill=TolColor3 
+	      ]  
+	     table[y index=0] {charts/data/parkazoo_65_10_17_requests.dat};
+	    \end{axis}
+	  \end{tikzpicture}
+	  \caption{ParKazoo Latency}
+	  \label{chart:parkazoo_max_latency}
+  \end{subfigure}
   \caption{Latency for Maximum Throughput}
+  \label{chart:max_thp_latencies}
 \end{figure}

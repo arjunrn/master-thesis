@@ -60,6 +60,12 @@ The Kazoo library provides the following functions. Some of these are also prese
   		def __init__(hosts, timeout=10.0, randomize_hosts=True)
   	\end{lstlisting}
   	To initialize a \textit{Kazoo} client object we need a list of server addresses to which the client can connect. This is provided as a Python \textit{list} of \textit{string}s. The \textit{timeout} argument specifies how long before the client should throw an \textit{Exception} when it cannot connect to the servers. The \textit{randomize\_hosts} indicates if random a server from the list should be selected or the first server should be chosen.
+	The client object also provides the following functionality.
+	\begin{enumerate}
+		\item Connectivity Checks
+		\item Client State
+		\item State Listeners
+	\end{enumerate}
 
   \subsubsection{Sync Operations}
   	\begin{lstlisting}
@@ -129,3 +135,4 @@ The Kazoo library provides the following functions. Some of these are also prese
   A client may need to watch for only certain types of changes to a znode, such as changes to the data of the node or its children. The watches left on the znodes by the client calls like get, get\_children or set are triggered whenever the znode is updates irrespective of the type of event. The watchers provide more fine grained control. They can also be disabled by returning a False Boolean function from the callback function.
   
   \subsection{Transactions}
+  ZooKeeper has the facility to perform atomic transactions which consist of a sequence of operations. A transaction allows a client to perform a sequence of operations on the cluster such that the operations and their results are not interleaved with operations from other clients. From the client's perspective it appears like the sequence of operations is processed as a single operation on the ZooKeeper cluster. This is a common feature on many databases and can be a useful feature in constructing more complex functionality. An application which uses the Kazoo client can request a \textit{Transaction} object from the Kazoo client. Then it performs \textit{get}, \textit{create}, \textit{update} and \textit{delete} operations within the scope of this transaction. Then finally it calls \textit{commit()} on the \textit{Transaction} object. This sends the transaction to the clusters which performs the operations while upholding the constraints of the transaction. If the transaction can be completed then the Kazoo client informs the application by returning \textit{True} to the application. If the transaction fails then it is automatically retried. If after a fixed number of retries the transaction cannot be still completed then a \textit{False} is returned to the application.

@@ -7,48 +7,69 @@ The unittest~\cite{hamill2004unit} framework used by the Kazoo library is called
 The unit test setup consists of totally 9 servers each running ZooKeeper. The 9 servers are divided into 3 clusters each running 3 servers. All the servers are actually locally running ZooKeeper processes. To one of the clusters we write the information to connect to all the clusters including itself. Then the server addresses of this cluster is passed to the ParKazoo clients used in the unit tests. 
 
 \section{Kazoo Tests}
+The tests which are reused from the original Kazoo library are listed.
 
-\subsection{Barrier Tests}
-There are tests to check the correctness of both the \textit{SingleBarrier} and ~\textit{DoubleBarrier}. For the single barrier test, we check that the barrier doesn't wait on a barrier that does not exist and that it successfully waits on a barrier that is initialized and exists.
-
-For the double barrier we first test the basic functionality of creating the barrier, entering it, then removing it and leaving it. Then we test that the DoubleBarrier works with 2 and three threads. Finally we test if the barrier functionality is unchanged when the corresponding paths for the barriers exist and they don't. \textit{Barrier} and \textit{DoubleBarrier} internally use \textit{create}, \textit{delete} and \textit{ensure\_path} calls on the ParKazoo client.
-
-\subsection{Counter Tests}
-
-We test that the counter functions correctly for both integer and float values. We also ensure that an error is raised when invalid values are added to the counter.
-
-The \textit{Counter} class internally uses \textit{ensure\_path}, \textit{set}, \textit{get} and \textit{retry} operations of the ParKazoo client. In the \textit{set} operation the \textit{version} parameter of the set operation is used so that only one client updates the client at a time.
-
-\subsection{Lock Tests}
-The lock test are quite extensive since locks are one of most commonly used use case for ZooKeeper. First the basic functionality of the lock is checked using just one thread. We spawn a thread which attempts to acquire the lock. We ensure that the thread's candidacy becomes visible on the main thread using the \textit{contenders()} method in the ~\textit{Lock} class. In the second tests multiple threads are created which all attempt to acquire a common. In the meanwhile the main thread acquires the lock first and get a list of contenders for the lock which should be the clients in the other threads. Then the test checks if the lock is acquired and released as the order of the contenders obtained in the previous step. The next test ensures that an acquired lock is released when the client session is lost. This done done by forcing the client to disconnect. Upon reconnection the client should indicate that the lock has been released. The non-blocking call to acquire a lock is also verified for correct execution. We also ensure that when the acquisition of the lock is canceled an exception is raised. Double acquisitions and multiple acquire-and-release on the same lock are checked.
-
-\textit{Lock} class uses the \textit{get\_children()}, \textit{delete()}, \textit{create()} and \textit{exits()} methods in the ParKazoo client. It also makes heavy use of watches.
-
-\subsection{Semaphore Tests}
-The tests for the \textit{Semaphore} test basic functionality. The first tests the basic acquisition and release of a Semaphore of size 1. Then it tests that a semaphore of size 1 cannot be acquired more than once. Then the nonblocking acquisition and release of semaphores is tested. The the \textit{holders()} property of the semaphore which gives the members which have already acquired the \textit{Semaphore}. Finally edge cases like session loss, inconsistent max lease parameters is checked so that semaphore behaves as expected.
+	\subsection{Barrier Tests}
+	There are tests to check the correctness of both the \textit{SingleBarrier} and ~\textit{DoubleBarrier}. For the single barrier test, we check that the barrier doesn't wait on a barrier that does not exist and that it successfully waits on a barrier that is initialized and exists.
 	
-\textit{Semaphore} uses the \textit{exists()}, \textit{ensure\_path()}, \textit{get()}, \textit{get\_children()} and \textit{delete()} operation of the ParKazoo client.  
+	For the double barrier we first test the basic functionality of creating the barrier, entering it, then removing it and leaving it. Then we test that the DoubleBarrier works with 2 and three threads. Finally we test if the barrier functionality is unchanged when the corresponding paths for the barriers exist and they don't. \textit{Barrier} and \textit{DoubleBarrier} internally use \textit{create}, \textit{delete} and \textit{ensure\_path} calls on the ParKazoo client.
+	
+	\subsection{Counter Tests}
+	
+	We test that the counter functions correctly for both integer and float values. We also ensure that an error is raised when invalid values are added to the counter.
+	
+	The \textit{Counter} class internally uses \textit{ensure\_path}, \textit{set}, \textit{get} and \textit{retry} operations of the ParKazoo client. In the \textit{set} operation the \textit{version} parameter of the set operation is used so that only one client updates the client at a time.
+	
+	\subsection{Lock Tests}
+	The lock test are quite extensive since locks are one of most commonly used use case for ZooKeeper. First the basic functionality of the lock is checked using just one thread. We spawn a thread which attempts to acquire the lock. We ensure that the thread's candidacy becomes visible on the main thread using the \textit{contenders()} method in the ~\textit{Lock} class. In the second tests multiple threads are created which all attempt to acquire a common. In the meanwhile the main thread acquires the lock first and get a list of contenders for the lock which should be the clients in the other threads. Then the test checks if the lock is acquired and released as the order of the contenders obtained in the previous step. The next test ensures that an acquired lock is released when the client session is lost. This done done by forcing the client to disconnect. Upon reconnection the client should indicate that the lock has been released. The non-blocking call to acquire a lock is also verified for correct execution. We also ensure that when the acquisition of the lock is canceled an exception is raised. Double acquisitions and multiple acquire-and-release on the same lock are checked.
+	
+	\textit{Lock} class uses the \textit{get\_children()}, \textit{delete()}, \textit{create()} and \textit{exits()} methods in the ParKazoo client. It also makes heavy use of watches.
+	
+	\subsection{Semaphore Tests}
+	The tests for the \textit{Semaphore} test basic functionality. The first tests the basic acquisition and release of a Semaphore of size 1. Then it tests that a semaphore of size 1 cannot be acquired more than once. Then the nonblocking acquisition and release of semaphores is tested. The the \textit{holders()} property of the semaphore which gives the members which have already acquired the \textit{Semaphore}. Finally edge cases like session loss, inconsistent max lease parameters is checked so that semaphore behaves as expected.
+		
+	\textit{Semaphore} uses the \textit{exists()}, \textit{ensure\_path()}, \textit{get()}, \textit{get\_children()} and \textit{delete()} operation of the ParKazoo client.  
+	
+	\subsection{Partitioner Tests}
+	The unit test for \textit{SetPartitioner} tests the basic functionality by checking if a one member party acquires all the members in a set. Then a two member party is used to check if the members of the set are divided equally and if the partitioner still functions correctly when the membership of the party is expanded. Finally we verify for the condition when the members of the party are larger than the number of items available. 
+	
+	\textit{Partitioner} internally uses the \textit{Lock} and \textit{Party} class for its implementation It also uses session watches which listens for broken sessions. 
+	
+	\subsection{Party Tests}
+	The unit test for party first checks the basic functionality. It does this by adding members to the \textit{Party} and confirming that they are registered as party members as returned by the \textit{data} attribute on the \textit{Party} class. And lastly the unit test checks that party functions correctly when an existing node is reused to create a Party and when the Party node disappears.
+	
+	\subsection{Queue Tests}
+	For basic queues the unit tests check if the item are added in the FIFO(First in First Out) order. Then it checks a newly created \textit{Queue} is empty. And lastly it checks that the priority of items added into the queue is honored while dequeuing.
+	
+	The \textit{Queue} and \textit{LockingQueue} internally use the \textit{Transaction} and \textit{sync()}. It also uses \textit{ensure\_path()}, \textit{retry()}, \textit{delete()} and \textit{delete()} methods on the ParKazoo client.
+	
+	\subsection{Watchers Tests}
+	There are unit tests for the various types of watches \textit{DataWatcher}, \textit{ChildrenWatcher} and \textit{PatientChildrenWatcher}. There are tests for verifying the basic functionality of each them. The different Watch classes are implemented in such a way that they can also be used as decorators. The tests verify that both styles of usage function correctly. And finally there are unit tests for edge cases like bad watch functions, invalid nodes and expired sessions.
+	
+	The various types of watchers internally use the \textit{get()}, \textit{get\_children()} and \textit{retry()} methods on the ParKazoo client object.
 
-\subsection{Partitioner Tests}
-The unit test for \textit{SetPartitioner} tests the basic functionality by checking if a one member party acquires all the members in a set. Then a two member party is used to check if the members of the set are divided equally and if the partitioner still functions correctly when the membership of the party is expanded. Finally we verify for the condition when the members of the party are larger than the number of items available. 
-
-\textit{Partitioner} internally uses the \textit{Lock} and \textit{Party} class for its implementation It also uses session watches which listens for broken sessions. 
-
-\subsection{Party Tests}
-The unit test for party first checks the basic functionality. It does this by adding members to the \textit{Party} and confirming that they are registered as party members as returned by the \textit{data} attribute on the \textit{Party} class. And lastly the unit test checks that party functions correctly when an existing node is reused to create a Party and when the Party node disappears.
-
-\subsection{Queue Tests}
-For basic queues the unit tests check if the item are added in the FIFO(First in First Out) order. Then it checks a newly created \textit{Queue} is empty. And lastly it checks that the priority of items added into the queue is honored while dequeuing.
-
-The \textit{Queue} and \textit{LockingQueue} internally use the \textit{Transaction} and \textit{sync()}. It also uses \textit{ensure\_path()}, \textit{retry()}, \textit{delete()} and \textit{delete()} methods on the ParKazoo client.
-
-\subsection{Watchers Tests}
-There are unit tests for the various types of watches \textit{DataWatcher}, \textit{ChildrenWatcher} and \textit{PatientChildrenWatcher}. There are tests for verifying the basic functionality of each them. The different Watch classes are implemented in such a way that they can also be used as decorators. The tests verify that both styles of usage function correctly. And finally there are unit tests for edge cases like bad watch functions, invalid nodes and expired sessions.
-
-The various types of watchers internally use the \textit{get()}, \textit{get\_children()} and \textit{retry()} methods on the ParKazoo client object.
-
-To summarise the unittests test every functional aspect of the ParKazoo client. The functions of client tested by every unittest is listed below.
+To summarise the unittests test every functional aspect of the ParKazoo client. The functions of client tested by every unittest is listed in the the Table ~\ref{table:KazooTests}.
 
 \input{tables/kazoo_tests}
 
 \section{ParKazoo Tests}
+There are tests which are implemented to specifically verify the functionality of ParKazoo. The following tests
+are implemented:
+
+\subsection{Mapping Tests}
+For every path there should be a mapping to a cluster in the ParKazoo. We start by testing that a path gets mapped to a cluster. So the cluster which is the result of the mapping function should be one of the members of the cluster list. Second we test that the result of the mapping should be the same every time the mapping function is executed. The test also checks that the the result is the same if the path contains a trailing slash and without it. Finally the test verifies that sibling nodes always get mapped to the same cluster.
+
+\subsection{Transaction Tests}
+The basic functionality of a transaction is tested by creating a node, modifying it and finally reading the value which should be the correct value. Then we check that the transaction will complete when we modify sibling nodes through a transaction. Finally we verify that there is an exception when we attempt to perform a transaction which the operations are mapped to different clusters.
+
+\subsection{Configuration and Setup Tests}
+The configuration has to be read from a primary ZooKeeper cluster. A valid configuration has to produce a properly configured ParKazoo client. To test this we use a single clustered ParKazoo cluster which contains its own information.
+
+\subsection{Client State and Connectivity Tests}
+The client should provide information about about the currently connectivity status of the ParKazoo ensemble. After the client connects to all the cluster, one of the constituent is broken manually. This should move the connection status to indicate that the same in the global state. When all the clusters are connected the global state should also reflect the same.
+
+\subsection{Listeners Tests}
+The application can attach listeners to listen to connection state changes. The first test checks that the listeners deliver the connection state changes in order to the applciation. Then test checks that the \textit{Disconnected} event is delivered whenever one of the connections is manually broken. Finally the \textit{Connecting}and \textit{Connected} events should be delivered when the client reconnects.
+
+\subsection{Hash Function Tests}
+The ParKazoo client provides a default hash function for hashing the paths. This function should return the same value irrespective of the platform on which it is executed. The basic object hash function which is provided by the Python standard library is platform dependent and is hence unsuitable for our requirements. To remedy this the hash function is configured to use the SHA-256 algorithm. The test ensures that the function returns the same value for the same string after it has been processed.

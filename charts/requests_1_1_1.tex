@@ -1,0 +1,44 @@
+\begin{figure}[ht!]
+	\begin{subfigure}{.6\textwidth}
+	  \begin{tikzpicture}
+	    \begin{axis}[
+	      ybar,
+	      ymin=0
+	    ]
+	    \addplot +[
+	        TolColor1,
+	        hist={
+	            bins=30,
+	            data min=0.01,
+	            data max=0.06
+	        },
+	        fill=TolColor3   
+	    ] table [y index=0] {charts/data/parkazoo_1_1_1_requests.dat};
+	    \end{axis}
+	  \end{tikzpicture}
+	  \caption{ParKazoo}
+	  \label{chart:parkazoo_single_latency}
+	\end{subfigure}
+	\begin{subfigure}{.6\textwidth}
+  		\begin{tikzpicture}
+    	\begin{axis}[
+      		ybar,
+      		ymin=0
+    	]
+    	\addplot +[
+        	TolColor1,
+        	hist={
+            	bins=30,
+            	data min=0.01,
+            	data max=0.06
+        	},
+        	fill=TolColor3   
+    	] table [y index=0] {charts/data/zookeeper_1_1_1_requests.dat};
+    	\end{axis}
+  		\end{tikzpicture}
+		\caption{ZooKeeper}
+		\label{chart:zk_single_latency}
+	\end{subfigure}
+  \caption{ParKazoo Request Latency}
+  \label{chart:single_node_latencies}
+\end{figure}

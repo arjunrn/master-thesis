@@ -1,1 +1,13 @@
 \chapter{Future Improvements}
+The implementation of ParKazoo could be improved to better performance. 
+
+\section{Auto-Reconfiguration of Ensemble}
+Future versions of ZooKeeper will support auto-reconfiguration of cluster members while the cluster is still in operation. To do this the new members should be added to the cluster. But the rule for this is that during the switchover the common subset of members between the new and old members of the quorum should contain a minimum quorum number of servers and one of them should be elected as the leader. After that the old cluster members which are are no longer required are switched off. To do this the clients are rebalanced in such a a way that minimum number of disconnections and reconnections should happen. 
+
+	To reconfigure the ParKazoo client sets a watch on the configuration node. When configuration node should have a version number associated with it. When the watch is triggered due to a reconfiguration the client receives the update. It then should re-read the configuration information. After a random amount of time the server-list on the client should be updated. The client internally determines if all the connections should be moved from one server to another server.
+
+\section{Weak Consistency}
+The ParKazoo system relies on the fact that sibling nodes are mapped to the same cluster. However if the application programmer is not aware of this fact then this can cause situations where all the traffic is directed at a single cluster in the ensemble. But if the programmer does not require the guarantees of primary order which are provided by ZooKeeper then the ensemble could be considered in a weak consistency mode. In this case the destination cluster of the node is determined by its own path rather than the path of the parent. In this case the nodes will be uniformly distributed across the clusters.
+
+\section{Asynchronous Operations}
+Currently all the operations use the synchronous operations which are executed in order. By using the asynchronous versions of the operations the operations can be executed in parallel. For example in the create operation the time to create a node can be decreased. If the checks to ensure that the parent node is exists and is not an emphemeral znode and the call to create a node are issued in parallel the time for the operation is the time required for the longer operation. In the case of recursive delete operation all the delete operations can be parallelized.
