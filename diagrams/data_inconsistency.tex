@@ -1,0 +1,88 @@
+\begin{figure}[ht!]
+	\centering
+	  % Step (1)
+	  \begin{subfigure}{1.0\textwidth}
+	    \centering
+	    \begin{tikzpicture}
+	      \node[thick, regular polygon, regular polygon sides=6, minimum width=30pt,draw, rotate=30, fill=TolColor4] (reg1) at (3,2){};
+        \node[thick, regular polygon, regular polygon sides=6, minimum width=30pt,draw, rotate=30, fill=TolColor4] (reg1) at (1,2){};
+        \filldraw[fill=TolColor3, draw=black, thick] (2,4) circle (15pt);
+        \draw (2,3.5) -- (3,2.5);
+        \draw (2,3.5) -- (1,2.5);
+
+        \node at (1.25,4) {/};
+        \node at (-0.5,2) {/node1};
+        \node at (4.5,2) {/node2};
+        
+        \filldraw[fill=TolColor3, draw=black, thick] (9,2) circle (15pt);
+        \filldraw[fill=TolColor3, draw=black, thick] (8,4) circle (15pt);
+        \node[thick, regular polygon, regular polygon sides=6, minimum width=30pt,draw, rotate=30, fill=TolColor4] (reg1) at (10,0){};
+        \draw (8,3.5) -- (9,2.5);
+        \draw (9,1.5) -- (10,0.5);
+        
+        \node at (7.25,4) {/};
+        \node at (10.2,2) {/node2};
+        \node at (11.5,0) {/node2/p\_1};
+      \end{tikzpicture}
+      \caption{The Initial State of Data}
+      \label{subfig:initialOperationInconsistency}
+    \end{subfigure}
+    
+    \vspace{2em}
+    % Step (2)
+    \begin{subfigure}{1.0\textwidth}
+      \centering
+      \begin{tikzpicture}
+        \node[thick, regular polygon, regular polygon sides=6, minimum width=30pt,draw, rotate=30, fill=TolColor4] (reg1) at (1,2){};
+        \filldraw[fill=TolColor3, draw=black, thick] (2,4) circle (15pt);
+        \draw (2,3.5) -- (1,2.5);
+
+        \node at (1.25,4) {/};
+        \node at (-0.5,2) {/node1};
+        
+        \filldraw[fill=TolColor3, draw=black, thick] (9,2) circle (15pt);
+        \filldraw[fill=TolColor3, draw=black, thick] (8,4) circle (15pt);
+        \node[thick, regular polygon, regular polygon sides=6, minimum width=30pt,draw, rotate=30, fill=TolColor9] (reg1) at (10,0){};
+        \draw (8,3.5) -- (9,2.5);
+        \draw (9,1.5) -- (10,0.5);
+        
+        \node at (7.25,4) {/};
+        \node at (10.2,2) {/node2};
+        \node at (11.5,0) {/node2/p\_1};
+      \end{tikzpicture}
+      \caption{Parent Node Deleted}
+      \label{subfig:deleteOperationInconsistency}
+    \end{subfigure}
+    
+    \vspace{2em}
+    \begin{subfigure}{1.0\textwidth}
+      \centering
+      \begin{tikzpicture}
+        % Step (3)
+	      \node[thick, regular polygon, regular polygon sides=6, minimum width=30pt,draw, rotate=30, fill=TolColor2] (reg1) at (3,2){};
+        \node[thick, regular polygon, regular polygon sides=6, minimum width=30pt,draw, rotate=30, fill=TolColor4] (reg1) at (1,2){};
+        \filldraw[fill=TolColor3, draw=black, thick] (2,4) circle (15pt);
+        \draw (2,3.5) -- (3,2.5);
+        \draw (2,3.5) -- (1,2.5);
+
+        \node at (1.25,4) {/};
+        \node at (-0.5,2) {/node1};
+        \node at (4.5,2) {/node2};
+        
+        \filldraw[fill=TolColor3, draw=black, thick] (9,2) circle (15pt);
+        \filldraw[fill=TolColor3, draw=black, thick] (8,4) circle (15pt);
+        \node[thick, regular polygon, regular polygon sides=6, minimum width=30pt,draw, rotate=30, fill=TolColor9] (reg1) at (10,0){};
+        \draw (8,3.5) -- (9,2.5);
+        \draw (9,1.5) -- (10,0.5);
+        
+        \node at (7.25,4) {/};
+        \node at (10.2,2) {/node2};
+        \node at (11.5,0) {/node2/p\_1};
+      \end{tikzpicture}
+      \caption{Child Node Created}
+      \label{subfig:createOperationInconsistency}
+    \end{subfigure}
+    
+	\caption{Recursive Delete Operation Inconsistency}
+	\label{fig:recDelInconsistency}
+\end{figure}
