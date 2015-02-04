@@ -1,11 +1,11 @@
 \begin{table}
-  \centering
-  \begin{tabular}{|l|c|c|}\hline%
-	  \textbf{Threads} & \textbf{ZooKeeper} & \textbf{ParKazoo}\\\hline
-    \csvreader[late after line=\\\hline]%
-      {tables/data/scientists.csv}{threads=\threads,zookeeper=\zookeeper,parkazoo=\parkazoo}%
-      {\threads & \zookeeper & \parkazoo}%
-  \end{tabular}
-  \caption{Average Throughput for a single node with a single process}
-  \label{table:single_process_throughput}
+	\centering
+	\begin{tabular}{|l|c|c|}\hline%
+		\textbf{Threads} & \textbf{ZooKeeper} & \textbf{ParKazoo} \\\hline
+		\csvreader[late after line=\\\hline]%
+		{tables/data/scientists.csv}{threads=\threads,zookeeper=\zookeeper,parkazoo=\parkazoo}%
+		{\threads        & \zookeeper         & \parkazoo}%     
+	\end{tabular}
+	\caption{Average Throughput for a single node with a single process}
+	\label{table:single_process_throughput}
 \end{table}

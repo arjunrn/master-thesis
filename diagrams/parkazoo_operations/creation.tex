@@ -1,25 +1,25 @@
 \begin{figure}
 	\begin{tikzpicture}
-
-	\node[thick, regular polygon, regular polygon sides=6, minimum width=30pt,draw, rotate=30, fill=TolColor4] (reg1) at (4,2){};
-	\node[thick, regular polygon, regular polygon sides=6, minimum width=30pt,draw, rotate=30, fill=TolColor4] (reg1) at (0,2){};
-	\filldraw[fill=TolColor3, draw=black, thick] (2,5) circle (15pt);
-	\draw (2,4.5) -- (4,2.5);
-	\draw (2,4.5) -- (0,2.5);
-
-	\node at (1.25,5) {/};
-	\node at (-1.2,2) {/node1};
-	\node at (2.9,2) {/node2};
-
-	\filldraw[fill=TolColor3, draw=black, thick] (10,5) circle (15pt);
-	\filldraw[fill=TolColor3, draw=black, thick] (12,2) circle (15pt);
-	\node[thick, regular polygon, regular polygon sides=6, minimum width=30pt,draw, rotate=30, fill=TolColor4] (reg1) at (10,-1){};
-	\draw (10,4.5) -- (12,2.5);
-	\draw (12,1.5) -- (10,-0.5);
-
-	\node at (9.25,5) {/};
-	\node at (10.75,2) {/node2};
-	\node at (8.25,-1) {/node2/child1};
+		
+		\node[thick, regular polygon, regular polygon sides=6, minimum width=30pt,draw, rotate=30, fill=TolColor4] (reg1) at (4,2){};
+		\node[thick, regular polygon, regular polygon sides=6, minimum width=30pt,draw, rotate=30, fill=TolColor4] (reg1) at (0,2){};
+		\filldraw[fill=TolColor3, draw=black, thick] (2,5) circle (15pt);
+		\draw (2,4.5) -- (4,2.5);
+		\draw (2,4.5) -- (0,2.5);
+		
+		\node at (1.25,5) {/};
+		\node at (-1.2,2) {/node1};
+		\node at (2.9,2) {/node2};
+		
+		\filldraw[fill=TolColor3, draw=black, thick] (10,5) circle (15pt);
+		\filldraw[fill=TolColor3, draw=black, thick] (12,2) circle (15pt);
+		\node[thick, regular polygon, regular polygon sides=6, minimum width=30pt,draw, rotate=30, fill=TolColor4] (reg1) at (10,-1){};
+		\draw (10,4.5) -- (12,2.5);
+		\draw (12,1.5) -- (10,-0.5);
+		
+		\node at (9.25,5) {/};
+		\node at (10.75,2) {/node2};
+		\node at (8.25,-1) {/node2/child1};
 	\end{tikzpicture}
 	\caption{ParKazoo Create Operation}
 	\label{fig:PKCreateOp}

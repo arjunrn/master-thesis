@@ -1,27 +1,27 @@
 \begin{table}[ht!]
 	\centering
 	\begin{subtable}{0.45\linewidth}
-	  \begin{tabular}{|l|c|}\hline%
-    	Processes & Average Throughput \\\hline
-    	\csvreader[late after line=\\\hline]%
-      	{tables/data/zookeeper_single_node.csv}{processes=\processes,throughput=\throughput}%
-      	{\processes & \throughput}%
-  	  \end{tabular}
-	  \caption{ZooKeeper}
-	  \label{table:single_node_zookeeper_throughput}
-	 \end{subtable}
-	 \quad
-  \begin{subtable}{0.45\linewidth}
-  	\begin{tabular}{|l|c|}\hline%
-    	Processes & Average Throughput \\\hline
-    	\csvreader[late after line=\\\hline]%
-      	{tables/data/parkazoo_single.node.csv}{processes=\processes,throughput=\throughput}%
-      	{\processes & \throughput}%
-  	\end{tabular}
-	\caption{ParKazoo}
-	\label{table:single_node_parkazoo_throughput}
-  \end{subtable}
-  
-  \caption{Average Throughput for a single ZooKeeper client node with a multiple processes}
-  \label{table:single_node_throughput}
+		\begin{tabular}{|l|c|}\hline%
+			Processes   & Average Throughput \\\hline
+			\csvreader[late after line=\\\hline]%
+			{tables/data/zookeeper_single_node.csv}{processes=\processes,throughput=\throughput}%
+			{\processes & \throughput}%    
+		\end{tabular}
+		\caption{ZooKeeper}
+		\label{table:single_node_zookeeper_throughput}
+	\end{subtable}
+	\quad
+	\begin{subtable}{0.45\linewidth}
+		\begin{tabular}{|l|c|}\hline%
+			Processes   & Average Throughput \\\hline
+			\csvreader[late after line=\\\hline]%
+			{tables/data/parkazoo_single.node.csv}{processes=\processes,throughput=\throughput}%
+			{\processes & \throughput}%    
+		\end{tabular}
+		\caption{ParKazoo}
+		\label{table:single_node_parkazoo_throughput}
+	\end{subtable}
+	  
+	\caption{Average Throughput for a single ZooKeeper client node with a multiple processes}
+	\label{table:single_node_throughput}
 \end{table}

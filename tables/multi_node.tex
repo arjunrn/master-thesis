@@ -2,10 +2,10 @@
 	\centering
 	\begin{subtable}[t]{0.45\linewidth}
 		\begin{tabular}{|l|c|}\hline%
-			Nodes & Average Throughput \\\hline
+			Nodes   & Average Throughput \\\hline
 			\csvreader[late after line=\\\hline]%
 			{tables/data/zookeeper_multi_node.csv}{nodes=\nodes,throughput=\throughput}%
-			{\nodes & \throughput}%
+			{\nodes & \throughput}%    
 		\end{tabular}
 		\caption{ZooKeeper}
 		\label{table:zookeeper_multinode_throughput}
@@ -13,15 +13,15 @@
 	\quad
 	\begin{subtable}[t]{0.45\linewidth}
 		\begin{tabular}{|l|c|}\hline%
-			Nodes & Average Throughput \\\hline
+			Nodes   & Average Throughput \\\hline
 			\csvreader[late after line=\\\hline]%
 			{tables/data/parkazoo_multi_node.csv}{nodes=\nodes,throughput=\throughput}%
-			{\nodes & \throughput}%
+			{\nodes & \throughput}%    
 		\end{tabular}
 		\caption{ParKazoo}
 		\label{table:parkazoo_multinode_throughput}
 	\end{subtable}
-	
+		
 	\caption{Average Throughput for a multiple client nodes with a multiple processes}
 	\label{table:multinode_throughput_all}
 \end{table}
