@@ -1,15 +1,15 @@
 \chapter{Implementation}
 
 \section{ParKazoo Architecture}
-  The entire ParKazoo server set is called a ParKazoo ensemble. An ensemble contains multiple ZooKeeper clusters. When a client wants to connect to a ParKazoo ensemble it has to know the addresses of all the clusters, which could be all the servers of the cluster or a subset. If the information about all the clusters are not given to the client then the client cannot function correctly. For this reason the addresses of servers in the clusters needs to be stored centrally where it is accessible to all clients. Future versions of ZooKeeper will support reconfiguration of the clusters during runtime. If one of the constituent ZooKeeper clusters is used to store the information about the configuration of the ensemble, then the ParKazoo client can watch for changes to the configuration data. When one of the constituent clusters is reconfigured, the ParKazoo client can automatically reconfigure itself when it is notified of the change. 
+The entire ParKazoo server set is called a ParKazoo ensemble. An ensemble contains multiple ZooKeeper clusters. When a client wants to connect to a ParKazoo ensemble it has to know the addresses of all the clusters, which could be all the servers of the cluster or a subset. If the information about all the clusters are not given to the client then the client cannot function correctly. For this reason the addresses of servers in the clusters needs to be stored centrally where it is accessible to all clients. Future versions of ZooKeeper will support reconfiguration of the clusters during runtime. If one of the constituent ZooKeeper clusters is used to store the information about the configuration of the ensemble, then the ParKazoo client can watch for changes to the configuration data. When one of the constituent clusters is reconfigured, the ParKazoo client can automatically reconfigure itself when it is notified of the change. 
 
 \addvspace{1em}
 \input{diagrams/parkazoo}
 \addvspace{1em}
-  	Figure ~\ref{fig:ParKazooArchitecture} depicts a ParKazoo ensemble with three clusters, with each cluster having three servers. All the clients are connected to all the cluster. However each client is connected to only one server in the cluster.
+Figure ~\ref{fig:ParKazooArchitecture} depicts a ParKazoo ensemble with three clusters, with each cluster having three servers. All the clients are connected to all the cluster. However each client is connected to only one server in the cluster.
   	
 \section{Client Initialization}
-    The information about all the clusters are stored on every cluster or on one main cluster. When the client has to be initialized only one of the server addresses has to be provided. The client connects to the server, reads the information about all the clusters and then initializes the individual Kazoo clients with the addresses of all the individual clusters.
+The information about all the clusters are stored on every cluster or on one main cluster. When the client has to be initialized only one of the server addresses has to be provided. The client connects to the server, reads the information about all the clusters and then initializes the individual Kazoo clients with the addresses of all the individual clusters.
 
 \section{ParKazoo Operations}
 Every parkazoo operation consists of some Kazoo operations wrapped in a single ParKazoo operation. Figure ~\ref{fig:ParKazooAlgo} depicts the basic algorithm which is common to all ParKazoo operations.
@@ -91,7 +91,7 @@ To set the value of a node find the cluster to which the node is mapped. Then us
 \end{lstlisting}
 
 \subsection{Finding children of a Node}
-    First the cluster on which the children can be found is called. Then we check if the parent node exists on it's own cluster. If it does but has no child nodes then querying directly on the cluster for the children nodes will throw an exception. We also ensure the path in case of future requests.
+First the cluster on which the children can be found is called. Then we check if the parent node exists on it's own cluster. If it does but has no child nodes then querying directly on the cluster for the children nodes will throw an exception. We also ensure the path in case of future requests.
 
 \begin{lstlisting}
   def get_children(self, path, watch=None, include_data=False):
@@ -122,16 +122,16 @@ In the above figure a query to the node \textit{/node2} to find the children. Th
 \subsection{Transactions}
 Transactions are used on ZooKeeper to speed up a sequence of operations. Either all the operations of a transaction are committed or the whole transaction is rolled back. This ensures that operations can be completed because only a single consensus is required to complete the whole transaction rather than an individual consensus for each operation in the transaction.
     
-    But in a ParKazoo ensemble there are multiple clusters and it's not possible to perform a consensus where the transaction is operating on znodes which are present on different clusters. Although this appears to be a substantial disadvantage, most transactions operate on sibling nodes. Later in the evaluation of the recipes we show these transactions are still used. Since all siblings are present on the same cluster in the case of strong consistency transactions can still be used to process the operations. In fact, most complex recipes like Locks, Barriers, Double Barriers which use transactions can still continue operating with this limitation.
+But in a ParKazoo ensemble there are multiple clusters and it's not possible to perform a consensus where the transaction is operating on znodes which are present on different clusters. Although this appears to be a substantial disadvantage, most transactions operate on sibling nodes. Later in the evaluation of the recipes we show these transactions are still used. Since all siblings are present on the same cluster in the case of strong consistency transactions can still be used to process the operations. In fact, most complex recipes like Locks, Barriers, Double Barriers which use transactions can still continue operating with this limitation.
     
-    To implement the transaction the original Kazoo Transaction object is wrapped with some verification logic that ensures the operations of the transaction are all operating on the same cluster. Every time an operation is added to the transaction the cluster corresponding to that operation is noted. Before the commit occurs the list of clusters is verified so that it contains only a single cluster.
+To implement the transaction the original Kazoo Transaction object is wrapped with some verification logic that ensures the operations of the transaction are all operating on the same cluster. Every time an operation is added to the transaction the cluster corresponding to that operation is noted. Before the commit occurs the list of clusters is verified so that it contains only a single cluster.
     
-    The \textit{Transaction} object provides the following operations:
-    \begin{itemize}
-	  \item \lstinline | def create(path, value='', ephemeral=False, sequence=False) |
-	  \item \lstinline | def delete(path, version=-1) |
-	  \item \lstinline | def set_data(path, value, version=-1) |
-	  \item \lstinline | def check(path, version) |
-	  \item \lstinline | def commit_async() |
-	  \item \lstinline | def commit() |
-	\end{itemize}
+The \textit{Transaction} object provides the following operations:
+\begin{itemize}
+	\item \lstinline | def create(path, value='', ephemeral=False, sequence=False) |
+	\item \lstinline | def delete(path, version=-1) |
+	\item \lstinline | def set_data(path, value, version=-1) |
+	\item \lstinline | def check(path, version) |
+	\item \lstinline | def commit_async() |
+	\item \lstinline | def commit() |
+\end{itemize}

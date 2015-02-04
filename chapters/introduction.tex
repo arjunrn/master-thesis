@@ -7,9 +7,9 @@ Distributed Coordination Services are a critical component of many distributed a
 The scale of distributed applications increase everyday. Coordination services like ZooKeeper need to keep up with this increasing traffic demands. The throughput rate of ZooKeeper is limited by three main factors:
 
 \begin{enumerate}
-  \item Local Disk Throughput
-  \item Network Speed
-  \item Local Processing capacity.
+	\item Local Disk Throughput
+	\item Network Speed
+	\item Local Processing capacity.
 \end{enumerate}
 
 For every write operation the ZooKeeper cluster requires a consensus between a quorum number of member nodes which agree on the proposed update, process it and finally acknowledge that they have committed the change. This slows down the response time. However the number of connected clients can be scaled only by increasing the number of servers in the ZooKeeper cluster, i.e. the number of nodes participating in the consensus. These competing but opposing forces makes scaling ZooKeeper difficult. 
