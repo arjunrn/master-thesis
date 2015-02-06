@@ -13,3 +13,4 @@
 .logged
 *.tex~
 *.bak*
+*.synctex.gz

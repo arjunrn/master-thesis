@@ -12,7 +12,7 @@ Figure ~\ref{fig:ParKazooArchitecture} depicts a ParKazoo ensemble with three cl
 The information about all the clusters are stored on every cluster or on one main cluster. When the client has to be initialized only one of the server addresses has to be provided. The client connects to the server, reads the information about all the clusters and then initializes the individual Kazoo clients with the addresses of all the individual clusters.
 
 \section{ParKazoo Operations}
-Every parkazoo operation consists of some Kazoo operations wrapped in a single ParKazoo operation. Figure ~\ref{fig:ParKazooAlgo} depicts the basic algorithm which is common to all ParKazoo operations.
+Every ParKazoo operation consists of some Kazoo operations wrapped in a single ParKazoo operation. Figure ~\ref{fig:ParKazooAlgo} depicts the basic algorithm which is common to all ParKazoo operations.
 
 \input{diagrams/parkazoo_algo.tex}
 
@@ -37,7 +37,7 @@ Before a node is created the parent needs to be checked. If the parent is an eph
     return cluster.create(path, value=value, ephemeral=ephemeral, sequence=sequence, makepath=makepath, acl=acl)
 \end{lstlisting}
 
-The figure above shows the steps in the creation of a node. The node to be created \textit{/node2/child1}. The node \textit{child1} and its parent \textit{node2} maybe present on 2 different clusters. If the \textit{make\_path} argument is not set to True then the parent node \textit{node2} should exist. The destination cluster of \textit{child1} maybe different from its parent \textit{node2}. In that case the \textit{node2} needs to be created on the destination cluster in the first step. This is done with the \textit{makepath} argument. Then the node is created with the create call.
+The Figure~\ref{fig:PKCreateOp} shows the steps in the creation of a node. The node to be created \textit{/node2/child1}. The node \textit{child1} and its parent \textit{node2} maybe present on 2 different clusters. If the \textit{make\_path} argument is not set to True then the parent node \textit{node2} should exist. The destination cluster of \textit{child1} maybe different from its parent \textit{node2}. In that case the \textit{node2} needs to be created on the destination cluster in the first step. This is done with the \textit{makepath} argument. Then the node is created with the create call.
 
 \subsection{Ensuring Path}
 The Kazoo library provides an API call to ensure that a path exists. If the path does not exist then it is created recursively. This approach is also used in ParKazoo.
@@ -117,7 +117,7 @@ First the cluster on which the children can be found is called. Then we check if
 
 \input{diagrams/parkazoo_operations/get_children}
 
-In the above figure a query to the node \textit{/node2} to find the children. They children of \textit{/node2} maybe present on another cluster. In that case the parent node's existence has to be confirmed on the destination cluster. If the node does not exist then it has to be created. This is done so that watches can be left on the node in case nodes are created later. The the \textit{/node2} is queried on the destination cluster.
+In the Figure~\ref{fig:getChildrenOperation} a query to the node \textit{/node2} to find the children. They children of \textit{/node2} maybe present on another cluster. In that case the parent node's existence has to be confirmed on the destination cluster. If the node does not exist then it has to be created. This is done so that watches can be left on the node in case nodes are created later. The the \textit{/node2} is queried on the destination cluster. Figure~\ref{subfig:getChildInit} shows the operation. The left side is the tree structure in the cluster which contains the node \textit{/node2}. It also has a sibling \textit{/node1}. The children of \textit{/node1} will get mapped to the cluster on the right. When there is a request to find the children for \textit{/node2} then a corresponding node is created on the children cluster. A watch is left on this newly created node. At some point of time in the future, as show in Figure~\ref{subfig:getChildCreate} when the node \textit{/node2/child1} is created the watch set on the node in the previous step is triggered.
 
 \subsection{Transactions}
 Transactions are used on ZooKeeper to speed up a sequence of operations. Either all the operations of a transaction are committed or the whole transaction is rolled back. This ensures that operations can be completed because only a single consensus is required to complete the whole transaction rather than an individual consensus for each operation in the transaction.
