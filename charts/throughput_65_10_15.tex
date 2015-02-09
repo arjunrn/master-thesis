@@ -1,30 +1,30 @@
 \begin{figure}
-	\centering
-	\begin{tikzpicture}
-		\begin{axis}[
-				xlabel={Time},
-				ylabel={Requests},
-				height=8cm,
-				width=0.9\textwidth,
-				cycle list name=mlineplot cycle,
-				legend columns=2,
-				enlarge y limits=0.02,
-				ymin=6000,ymax=17000,
-				xlabel style={name=xlabel}, % Name the xlabel node
-				legend style={
-					at={(xlabel.south)}, % Place legend relative to xlabel node
-					yshift=-1ex,
-					anchor=north,
-					legend cell align=left
-				}
-			]
-			
-			\addplot table[x=column1,y=column2] {charts/data/parkazoo_65_10_17_throughput.dat};
-			\addplot+ table[x=column1,y=column2] {charts/data/zookeeper_65_10_15_throughput.dat};
-			     
-			\legend {ParKazoo, ZooKeeper}
-		\end{axis}
-	\end{tikzpicture}
-	\caption {Maximum Throughput for ParKazoo and ZooKeeper}
-	\label{fig:throughput_time_all}
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+      xlabel={Time},
+      ylabel={Requests},
+      height=8cm,
+      width=0.9\textwidth,
+      cycle list name=mlineplot cycle,
+      legend columns=2,
+      enlarge y limits=0.02,
+      ymin=3000,ymax=17000,
+      xlabel style={name=xlabel}, % Name the xlabel node
+      legend style={
+          at={(xlabel.south)}, % Place legend relative to xlabel node
+          yshift=-1ex,
+          anchor=north,
+          legend cell align=left
+      }
+    ]
+
+    \addplot table[x=column1,y=column2] {charts/data/parkazoo_110_8_13_throughput.dat};
+    \addplot+ table[x=column1,y=column2] {charts/data/zookeeper_150_7_8_throughput.dat};
+     
+    \legend {ParKazoo, ZooKeeper}
+    \end{axis}
+  \end{tikzpicture}
+  \caption {ParKazoo Throughput}
+  \label{fig:throughput_time_all}
 \end{figure}
