@@ -8,3 +8,6 @@ Not all operations are completely data safe. The recursive data operation is an 
 
 \section{Ordering of Operations}
 ZooKeeper provides the guarantee of client operation order. This means that all the operations which are issues by a client are executed in the order they are sent to the server. But with ParKazoo this assumptions will not hold true. Assume 2 operations issued by a client. The first operation is mapped to one cluster and the second operation gets mapped to another cluster. If the operations are issued one after the other in a normal ZooKeeper operation the result of the first operation is returned first. But with ParKazoo the result of the first operation could be returned first because the operations are executed on different clusters.
+
+\section{Limited Client Connections}
+The evaluation tests revealed that there is a natural limit to the number of connected clients. Although in a production system it is would quite uncommon to have so many clients this still is a limiting factor for the throughput of the entire system.
