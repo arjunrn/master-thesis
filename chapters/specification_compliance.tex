@@ -7,12 +7,12 @@ The unittest~\cite{hamill2004unit} framework used by the Kazoo library is called
 The unit test setup consists of totally 9 servers each running ZooKeeper. The 9 servers are divided into 3 clusters each running 3 servers. All the servers are actually locally running ZooKeeper processes. To one of the clusters we write the information to connect to all the clusters including itself. Then the server addresses of this cluster is passed to the ParKazoo clients used in the unit tests. 
 
 \section{Kazoo Tests}
-The tests which are reused from the original Kazoo library are listed.
+The tests which are reused from the original Kazoo library are listed below:
 
 	\subsection{Barrier Tests}
-	There are tests to check the correctness of both the \textit{SingleBarrier} and ~\textit{DoubleBarrier}. For the single barrier test, we check that the barrier doesn't wait on a barrier that does not exist and that it successfully waits on a barrier that is initialized and exists.
+	There are tests to check the correctness of both the \textit{SingleBarrier} and ~\textit{DoubleBarrier}. For the single barrier test, we check that the barrier doesn't wait on a barrier that is non-existent and that it successfully waits on a barrier that is initialized and exists.
 	
-	For the double barrier we first test the basic functionality of creating the barrier, entering it, then removing it and leaving it. Then we test that the DoubleBarrier works with 2 and three threads. Finally we test if the barrier functionality is unchanged when the corresponding paths for the barriers exist and they don't. \textit{Barrier} and \textit{DoubleBarrier} internally use \textit{create}, \textit{delete} and \textit{ensure\_path} calls on the ParKazoo client.
+	For the double barrier we first test the basic functionality of creating the barrier, entering it, then removing it and leaving it. Then we test that the DoubleBarrier works with two and three threads. Finally we test if the barrier functionality is unchanged when the corresponding paths for the barriers exist and they don't. \textit{Barrier} and \textit{DoubleBarrier} internally use \textit{create}, \textit{delete} and \textit{ensure\_path} calls on the ParKazoo client.
 	
 	\subsection{Counter Tests}
 	
@@ -21,12 +21,12 @@ The tests which are reused from the original Kazoo library are listed.
 	The \textit{Counter} class internally uses \textit{ensure\_path}, \textit{set}, \textit{get} and \textit{retry} operations of the ParKazoo client. In the \textit{set} operation the \textit{version} parameter of the set operation is used so that only one client updates the client at a time.
 	
 	\subsection{Lock Tests}
-	The lock test are quite extensive since locks are one of most commonly used use case for ZooKeeper. First the basic functionality of the lock is checked using just one thread. We spawn a thread which attempts to acquire the lock. We ensure that the thread's candidacy becomes visible on the main thread using the \textit{contenders()} method in the ~\textit{Lock} class. In the second tests multiple threads are created which all attempt to acquire a common. In the meanwhile the main thread acquires the lock first and get a list of contenders for the lock which should be the clients in the other threads. Then the test checks if the lock is acquired and released as the order of the contenders obtained in the previous step. The next test ensures that an acquired lock is released when the client session is lost. This done done by forcing the client to disconnect. Upon reconnection the client should indicate that the lock has been released. The non-blocking call to acquire a lock is also verified for correct execution. We also ensure that when the acquisition of the lock is canceled an exception is raised. Double acquisitions and multiple acquire-and-release on the same lock are checked.
+	The lock test are quite extensive since locks are one of most commonly used use case for ZooKeeper. First the basic functionality of the lock is checked using just one thread. We spawn a thread which attempts to acquire the lock. We ensure that the thread's candidacy becomes visible on the main thread using the \textit{contenders()} method in the ~\textit{Lock} class. In the second test multiple threads are created with their own clients all of which attempt to acquire a common lock. In the meanwhile, the main thread acquires the lock first and get a list of contenders for the lock which should be the clients in the other threads. Then the test checks if the lock is acquired and released in the same order of the contenders obtained in the previous step. The next test ensures that an acquired lock is released when the client session is lost. This done done by forcing the client to disconnect. Upon reconnection the client should indicate that the lock has been released. The non-blocking call to acquire a lock is also verified for correct execution. We also ensure that when the acquisition of the lock is canceled an exception is raised. Double acquisitions and multiple acquire-and-release on the same lock are checked for correctness.
 	
 	\textit{Lock} class uses the \textit{get\_children()}, \textit{delete()}, \textit{create()} and \textit{exits()} methods in the ParKazoo client. It also makes heavy use of watches.
 	
 	\subsection{Semaphore Tests}
-	The tests for the \textit{Semaphore} test basic functionality. The first tests the basic acquisition and release of a Semaphore of size 1. Then it tests that a semaphore of size 1 cannot be acquired more than once. Then the non-blocking acquisition and release of semaphores is tested. The the \textit{holders()} property of the semaphore which gives the members which have already acquired the \textit{Semaphore}. Finally edge cases like session loss, inconsistent max lease parameters is checked so that semaphore behaves as expected.
+	The tests for the \textit{Semaphore} test basic functionality. The first tests the simple acquisition and release of a Semaphore of size 1. Then it tests that a semaphore of size 1 cannot be acquired more than once. Then the non-blocking acquisition and release of semaphores is tested. The the \textit{holders()} property of the semaphore which gives the members which have already acquired the \textit{Semaphore}. Finally edge cases like session loss, inconsistent maximum lease parameters is checked so that semaphore behaves as expected.
 		
 	\textit{Semaphore} uses the \textit{exists()}, \textit{ensure\_path()}, \textit{get()}, \textit{get\_children()} and \textit{delete()} operation of the ParKazoo client.  
 	
@@ -53,8 +53,7 @@ To summarize the unit tests test every functional aspect of the ParKazoo client.
 \input{tables/kazoo_tests}
 
 \section{ParKazoo Tests}
-There are tests which are implemented to specifically verify the functionality of ParKazoo. The following tests
-are implemented:
+There are tests which are implemented to specifically verify the functionality of ParKazoo. They are as follows:
 
 \subsection{Mapping Tests}
 For every path there should be a mapping to a cluster in the ParKazoo. We start by testing that a path gets mapped to a cluster. So the cluster which is the result of the mapping function should be one of the members of the cluster list. Second we test that the result of the mapping should be the same every time the mapping function is executed. The test also checks that the the result is the same if the path contains a trailing slash and without it. Finally the test verifies that sibling nodes always get mapped to the same cluster.
