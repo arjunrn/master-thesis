@@ -2,14 +2,14 @@
 
 \section{Motivation}
 
-Distributed Coordination Services are a critical component of many distributed applications. There have been several implementations of such algorithms in the past. Google published a paper on an internal service called Chubby~\cite{burrows2006chubby}. This sparked an interest in using similar services in other distributed application. ZooKeeper~\cite{hunt2010zookeeper} was developed by Yahoo to replicate some the functionality of Chubby. ZooKeeper was implemented in Java and is today maintained by the Apache Software Foundation. It is also a component in other distributed frameworks like Hadoop and Cassandra. There have been other implementations of coordination services like Doozer and etcd. These projects are relatively new and are based on the Raft consensus protocol which is not extensively deployed in working systems. 
+Distributed Coordination Services are a critical component of many distributed applications. There have been several implementations of such algorithms in the past. Google published a paper on an internal service called Chubby~\cite{burrows2006chubby}. This sparked an interest in using similar services in other distributed application. ZooKeeper~\cite{hunt2010zookeeper} was developed by Yahoo to replicate some the functionality of Chubby. ZooKeeper was implemented in Java and is today maintained by the Apache Software Foundation. It is also a component in other distributed frameworks like Hadoop and Cassandra. There have been other implementations of coordination services like Doozer and etcd. These projects are relatively new and are based on the Raft~\cite{ongaro2013search} consensus protocol which is not extensively deployed in working systems. 
 
 The scale and size of distributed applications increases everyday. Coordination services like ZooKeeper need to keep up with this increasing traffic demands. The throughput rate of ZooKeeper is limited by three main factors:
 
 \begin{enumerate}
 	\item Local Disk Throughput
 	\item Network Speed
-	\item Local Processing capacity.
+	\item Local Processing Capacity.
 \end{enumerate}
 
 For every write operation the ZooKeeper cluster requires a consensus between a quorum number of member nodes which agree on the proposed update, process it and finally acknowledge that they have committed the change. This slows down the response time. However the number of connected clients and the fault-tolerance of the cluster can be scaled only by increasing the number of servers in the ZooKeeper cluster, that is the number of nodes participating in the consensus. These competing but opposing forces makes scaling the throughput of ZooKeeper difficult. 
@@ -26,9 +26,9 @@ At this point, it has to be mentioned that this solution is not an attempt to re
 
 \textit{Chapter 4} explains the implementation of ParKazoo. All of operations which are implemented are explained in detail.
 
-In \textit{Chapter 5} the tests which are used to confirm the functionality of ParKazoo are explained. Some tests from Kazoo are reused to confirm the functionality of ParKazoo are also discussed.
+In \textit{Chapter 5} the tests which are used to confirm the functionality of ParKazoo are explained. Some tests from Kazoo which are reused to confirm the functionality of ParKazoo are also discussed.
 
-\textit{Chapter 6} is the Evaluation chapter which discusses the results of testing the Throughput and the Latency results.
+\textit{Chapter 6} is the Evaluation chapter which discusses the results of testing the Throughput and the Latency of ParKazoo against the original ZooKeeper.
 
 \textit{Chapter 7} describes some of the limitations in the proposed solution.
 
