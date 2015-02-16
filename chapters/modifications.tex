@@ -1,7 +1,7 @@
 \chapter{Implementation}
 
 \section{ParKazoo Architecture}
-The entire ParKazoo server set is called a ParKazoo ensemble. An ensemble contains multiple ZooKeeper clusters. When a client wants to connect to a ParKazoo ensemble it has to know the addresses of all the clusters, which could be all the servers of the cluster or a subset. If the information about all the clusters are not given to the client then the client cannot function correctly. For this reason the addresses of servers in the clusters needs to be stored centrally where it is accessible to all clients. Future versions of ZooKeeper will support reconfiguration of the clusters during runtime. If one of the constituent ZooKeeper clusters is used to store the information about the configuration of the ensemble, then the ParKazoo client can watch for changes to the configuration data. When one of the constituent clusters is reconfigured, the ParKazoo client can automatically reconfigure itself when it is notified of the change. 
+The entire ParKazoo server set is called a ParKazoo ensemble. An ensemble contains multiple ZooKeeper clusters. When a client wants to connect to a ParKazoo ensemble it has to know the addresses of all the clusters, which could be all the servers of the cluster or a subset. If the information about all the clusters are not given to the client then the client cannot function correctly. For this reason the addresses of servers in the clusters needs to be stored centrally where it is accessible to all clients.  
 
 \addvspace{1em}
 \input{diagrams/parkazoo}
@@ -9,10 +9,10 @@ The entire ParKazoo server set is called a ParKazoo ensemble. An ensemble contai
 Figure ~\ref{fig:ParKazooArchitecture} depicts a ParKazoo ensemble with three clusters, with each cluster having three servers. All the clients are connected to all the cluster. However each client is connected to only one server in the cluster.
   	
 \section{Client Initialization}
-The information about all the clusters are stored on every cluster or on one main cluster. When the client has to be initialized only one of the server addresses has to be provided. The client connects to the server, reads the information about all the clusters and then initializes the individual Kazoo clients with the addresses of all the individual clusters.
+The information about all the constituent clusters are stored on one cluster which is part of the ParKazoo ensemble or on separate ZooKeeper cluster. The choice of the storage location is irrelevant as long as all the clients can access it. The configuration information could also be stored on all the clusters of the ParKazoo ensemble but this would require that the information is kept consistent. When the client has to be initialized only one of the server addresses has to be provided. The client connects to the server, reads the information about all the clusters and then initializes the individual Kazoo clients with the addresses of all the individual clusters.
 
 \section{ParKazoo Operations}
-Every ParKazoo operation consists of some Kazoo operations wrapped in a single ParKazoo operation. Figure ~\ref{fig:ParKazooAlgo} depicts the basic algorithm which is common to all ParKazoo operations.
+Every ParKazoo operation consists of some Kazoo operations wrapped in a single ParKazoo operation. Figure ~\ref{fig:ParKazooAlgo} depicts the basic algorithm which is common to all ParKazoo operations. The algorithm begins by accepting the path of the znode to be operated upon and the type of operation. Then the algorithm establishes if the parent znode exists on the cluster of the target znode. If it does not exists then algorithm creates it if the operation is a modifying operating like \textit{create}. Otherwise an \textit{Error} is returned. Finally the operation is performed and the result of the operation is returned. 
 
 \input{diagrams/parkazoo_algo.tex}
 
@@ -70,7 +70,7 @@ The original functionality from Kazoo is reused after it has been wrapped in the
 \end{lstlisting}
 
 \subsection{Getting Node Data}
-Fetching the data for a node is straightforward. Hash the parent path of the node and find the cluster to which the node is mapped. Then perform the get using the Kazoo client to fetch the data.
+Fetching the data for a node is straightforward. Hash the parent path of the node and find the cluster to which the node is mapped. Then perform the \textit{get} using the Kazoo client for that cluster to fetch the data.
 
 \begin{lstlisting}
   def get(self, path, watch=None):
@@ -91,7 +91,7 @@ To set the value of a node find the cluster to which the node is mapped. Then us
 \end{lstlisting}
 
 \subsection{Finding children of a Node}
-First the cluster on which the children can be found is called. Then we check if the parent node exists on it's own cluster. If it does but has no child nodes then querying directly on the cluster for the children nodes will throw an exception. We also ensure the path in case of future requests.
+In the first we using the \textit{exists} call we ensure that the node for which the children are requested actually exists. Then we check if the parent node exists on the cluster which corresponds to the cluster for its child znodes. We also ensure the path(create the parent znode) in case of future requests which will trigger the watch function when child znodes are created at some point in the future.
 
 \begin{lstlisting}
   def get_children(self, path, watch=None, include_data=False):
@@ -117,14 +117,14 @@ First the cluster on which the children can be found is called. Then we check if
 
 \input{diagrams/parkazoo_operations/get_children}
 
-In the Figure~\ref{fig:getChildrenOperation} a query to the node \textit{/node2} to find the children. They children of \textit{/node2} maybe present on another cluster. In that case the parent node's existence has to be confirmed on the destination cluster. If the node does not exist then it has to be created. This is done so that watches can be left on the node in case nodes are created later. The the \textit{/node2} is queried on the destination cluster. Figure~\ref{subfig:getChildInit} shows the operation. The left side is the tree structure in the cluster which contains the node \textit{/node2}. It also has a sibling \textit{/node1}. The children of \textit{/node1} will get mapped to the cluster on the right. When there is a request to find the children for \textit{/node2} then a corresponding node is created on the children cluster. A watch is left on this newly created node. At some point of time in the future, as show in Figure~\ref{subfig:getChildCreate} when the node \textit{/node2/child1} is created the watch set on the node in the previous step is triggered.
+In the Figure~\ref{fig:getChildrenOperation} a query is made to the node \textit{/node2} to find its children. The children of \textit{/node2} maybe present on another cluster. In that case the parent node's existence has to be confirmed on the destination cluster. If the node does not exist then it has to be created. This is done so that watches can be left on the node in case nodes are created later. The the \textit{/node2} is queried on the destination cluster. Figure~\ref{subfig:getChildInit} shows the operation. The left side is the tree structure in the cluster which contains the node \textit{/node2}. It also has a sibling \textit{/node1}. The children of \textit{/node2} will get mapped to the cluster on the right. When there is a request to find the children for \textit{/node2} then a corresponding node is created on the children cluster. A watch is left on this newly created node. At some point of time in the future, as show in Figure~\ref{subfig:getChildCreate} when the node \textit{/node2/child1} is created the watch set on the node in the previous step is triggered.
 
 \subsection{Transactions}
 Transactions are used on ZooKeeper to speed up a sequence of operations. Either all the operations of a transaction are committed or the whole transaction is rolled back. This ensures that operations can be completed because only a single consensus is required to complete the whole transaction rather than an individual consensus for each operation in the transaction.
     
 But in a ParKazoo ensemble there are multiple clusters and it's not possible to perform a consensus where the transaction is operating on znodes which are present on different clusters. Although this appears to be a substantial disadvantage, most transactions operate on sibling nodes. Later in the evaluation of the recipes we show these transactions are still used. Since all siblings are present on the same cluster in the case of strong consistency transactions can still be used to process the operations. In fact, most complex recipes like Locks, Barriers, Double Barriers which use transactions can still continue operating with this limitation.
     
-To implement the transaction the original Kazoo Transaction object is wrapped with some verification logic that ensures the operations of the transaction are all operating on the same cluster. Every time an operation is added to the transaction the cluster corresponding to that operation is noted. Before the commit occurs the list of clusters is verified so that it contains only a single cluster.
+To implement the transaction the original Kazoo Transaction object is wrapped with basic verification logic which ensures the operations of the transaction are all operating on the same cluster. Every time an operation is added to the transaction the cluster corresponding to that operation is noted. Before the commit occurs the list of clusters is verified so that it contains only a single cluster.
     
 The \textit{Transaction} object provides the following operations:
 \begin{itemize}

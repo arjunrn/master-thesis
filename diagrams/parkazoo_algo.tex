@@ -3,38 +3,38 @@
 		\node (start) [startstop] {Start};
 		\node (in1) [io, below of=start] {Input \textit{node\_path}, \textit{operation}};
 		\draw [arrow] (start) -- (in1);
-				
+						
 		\node (mapping) [process, below of=in1] {Find parent path and destination cluster};
 		\draw [arrow] (in1) -- (mapping);
-				
+						
 		\node (decision_exists) [decision, below of=mapping, node distance=3cm] {\textit{PNode} exists?};
 		\draw [arrow] (mapping) -- (decision_exists);
-				
+						
 		\node (decision_create) [decision, right of=decision_exists, node distance=4cm] {Should create?};
-		\draw [arrow] (decision_exists) -- (decision_create);
-				
+		\draw [arrow] (decision_exists) -- node[anchor=south] {no}(decision_create);
+						
 		\node (d_should_create) [decision, below of=decision_create, node distance=4cm] {Can create?};
-		\draw [arrow] (decision_create) -- (d_should_create);
-				
+		\draw [arrow] (decision_create) -- node[anchor=east] {yes}(d_should_create);
+						
 		\node (create_path) [process, below of=d_should_create, node distance=3cm] {Create parent};
-		\draw [arrow] (d_should_create) -- (create_path);
-				
+		\draw [arrow] (d_should_create) -- node[anchor=east] {yes}(create_path);
+						
 		\node (perform_operation) [process, left of=create_path, node distance=4cm] {Perform Operation};
 		\draw [arrow] (create_path) -- (perform_operation);
-		\draw [arrow] (decision_exists) -- (perform_operation);
-				
+		\draw [arrow] (decision_exists) -- node[anchor=east] {yes}(perform_operation);
+						
 		\node (op_result) [io, below of=perform_operation] {Operation Result};
 		\draw [arrow] (perform_operation) -- (op_result);
-				
+						
 		\node (end) [startstop, below of=op_result] {Stop};
 		\draw [arrow] (op_result) -- (end);
-				
-		\node (error_result) [io, right of=d_should_create, node distance=4cm] {Error Result};
-		\draw [arrow] (d_should_create) -- (error_result);
-		\path [arrow, draw] (decision_create) -| (error_result);
+						
+		\node (error_result) [io, right of=d_should_create, node distance=5cm] {Error Result};
+		\draw [arrow] (d_should_create) -- node[anchor=south] {no}(error_result);
+		\path [arrow, draw] (decision_create) -| node[anchor=south] {no}(error_result);
 		\path [arrow, draw] (error_result) |- (end);
 	\end{tikzpicture}
-	
+		
 	\caption{ParKazoo Operation Algorithm}
 	\label{fig:ParKazooAlgo}
 \end{figure}
