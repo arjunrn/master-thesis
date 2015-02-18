@@ -2,16 +2,15 @@
 	\begin{subfigure}{.6\textwidth}
 		\begin{tikzpicture}
 			\begin{axis}[
+					scaled ticks=false, tick label style={/pgf/number format/fixed},
+					xlabel={Latency(seconds)},
+					ylabel={Number of Requests},
 					ybar,
 					ymin=0
 				]
 				\addplot +[
 					TolColor1,
-					hist={
-						bins=30,
-						data min=0.01,
-						data max=0.06
-					},
+					hist={bins=30,data min=0.01,data max=0.06},
 					fill=TolColor3   
 					] table [y index=0] {charts/data/parkazoo_1_1_1_requests.dat};
 					\end{axis}
@@ -22,16 +21,15 @@
 			\begin{subfigure}{.6\textwidth}
 				\begin{tikzpicture}
 					\begin{axis}[
+							scaled ticks=false, tick label style={/pgf/number format/fixed},
+							xlabel={Latency},
+							ylabel={Number of Requests},
 							ybar,
 							ymin=0
 						]
 						\addplot +[
 							TolColor1,
-							hist={
-								bins=30,
-								data min=0.01,
-								data max=0.06
-							},
+							hist={bins=30,data min=0.01,data max=0.06},
 							fill=TolColor3   
 							] table [y index=0] {charts/data/zookeeper_1_1_1_requests.dat};
 							\end{axis}

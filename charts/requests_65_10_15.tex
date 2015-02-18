@@ -1,49 +1,45 @@
 \begin{figure}[ht!]
-  \begin{subfigure}[t]{.5\textwidth}
-	  \begin{tikzpicture}
-		\begin{axis}[
-	      ybar,
-	      ymin=0,
-	      xmax=2
-	    ]
-	      \addplot+ [
-	        TolColor1,
-	        hist={
-				bins=40,
-	            data min=0.2,
-	            data max=1.8
-	        },
-	        fill=TolColor3 
-	      ]  
-	     table[y index=0] {charts/data/zookeeper_150_7_8_requests.dat};
-	    \end{axis}
-	  \end{tikzpicture}
-	  \caption{ZooKeeper Latencies}
-	  \label{chart:zk_max_latency}
-  \end{subfigure}
-  \hspace{2em}
-  \begin{subfigure}[t]{.5\textwidth}
-	  \begin{tikzpicture}
-	    \begin{axis}[
-	      ybar,
-	      ymin=0,
-	      xmax=2,
-	    ]
-	      \addplot+ [
-	        TolColor1,
-	        hist={
-	            bins=40,
-	            data min=0.2,
-	            data max=2.2
-	        },
-	        fill=TolColor3 
-	      ]  
-	     table[y index=0] {charts/data/parkazoo_110_8_13_requests.dat};
-	    \end{axis}
-	  \end{tikzpicture}
-	  \caption{ParKazoo Latency}
-	  \label{chart:parkazoo_max_latency}
-  \end{subfigure}
-  \caption{Latency for Maximum Throughput}
-  \label{chart:max_thp_latencies}
+	\begin{subfigure}[t]{.5\textwidth}
+		\begin{tikzpicture}
+			\begin{axis}[
+					xlabel={Latency},
+					ylabel={Number of Requests},
+					ybar,
+					ymin=0,
+					xmax=2
+				]
+				\addplot+ [
+					TolColor1,
+					hist={bins=40,data min=0.2,data max=1.8},
+					fill=TolColor3 
+				]  
+				table[y index=0] {charts/data/zookeeper_150_7_8_requests.dat};
+			\end{axis}
+		\end{tikzpicture}
+		\caption{ZooKeeper Latencies}
+		\label{chart:zk_max_latency}
+	\end{subfigure}
+	\hspace{2em}
+	\begin{subfigure}[t]{.5\textwidth}
+		\begin{tikzpicture}
+			\begin{axis}[
+					xlabel={Latency},
+					ylabel={Number of Requests},
+					ybar,
+					ymin=0,
+					xmax=2,
+				]
+				\addplot+ [
+					TolColor1,
+					hist={bins=40,data min=0.2,data max=2.2},
+					fill=TolColor3 
+				]  
+				table[y index=0] {charts/data/parkazoo_110_8_13_requests.dat};
+			\end{axis}
+		\end{tikzpicture}
+		\caption{ParKazoo Latency}
+		\label{chart:parkazoo_max_latency}
+	\end{subfigure}
+	\caption{Latency for Maximum Throughput}
+	\label{chart:max_thp_latencies}
 \end{figure}

@@ -2,7 +2,7 @@
 	\centering
 	\begin{subtable}{0.45\linewidth}
 		\begin{tabular}{|l|c|}\hline%
-			Processes   & Average Throughput \\\hline
+			\textbf{Processes}   & \textbf{Average Throughput} \\\hline
 			\csvreader[late after line=\\\hline]%
 			{tables/data/zookeeper_single_node.csv}{processes=\processes,throughput=\throughput}%
 			{\processes & \throughput}%    
@@ -13,7 +13,7 @@
 	\quad
 	\begin{subtable}{0.45\linewidth}
 		\begin{tabular}{|l|c|}\hline%
-			Processes   & Average Throughput \\\hline
+			\textbf{Processes}   & \textbf{Average Throughput} \\\hline
 			\csvreader[late after line=\\\hline]%
 			{tables/data/parkazoo_single.node.csv}{processes=\processes,throughput=\throughput}%
 			{\processes & \throughput}%    
