@@ -54,12 +54,12 @@
 \setmonofont[Scale=MatchLowercase]{Luxi Mono}
 
 \RequirePackage[labelfont={bf,sf,footnotesize,singlespacing},
-								textfont={sf,footnotesize,singlespacing},
-								justification={justified,RaggedRight},
-								singlelinecheck=false,
-								margin=0pt,
-								figurewithin=chapter,
-								tablewithin=chapter]{caption}
+	textfont={sf,footnotesize,singlespacing},
+	justification={justified,RaggedRight},
+	singlelinecheck=false,
+	margin=0pt,
+	figurewithin=chapter,
+tablewithin=chapter]{caption}
 
 \renewcommand{\thefootnote}{\fnsymbol{footnote}}
 
@@ -67,8 +67,8 @@
 
 % an environment for paragraph-style section
 \providecommand\newthought[1]{%
-   \addvspace{1.0\baselineskip plus 0.5ex minus 0.2ex}%
-   \noindent\textsc{#1}%
+	\addvspace{1.0\baselineskip plus 0.5ex minus 0.2ex}%
+	\noindent\textsc{#1}%
 }
 
 % Align reference numbers so that they do not cause an indent
@@ -76,24 +76,24 @@
 \setlength\mybibindent{0pt}
 \makeatletter
 \renewenvironment{thebibliography}[1]
-    {\chapter*{\bibname}%
-     \@mkboth{\MakeUppercase\bibname}{\MakeUppercase\bibname}%
-     \list{\@biblabel{\@arabic\c@enumiv}}
-          {\settowidth\labelwidth{\@biblabel{999}}
-           \leftmargin\labelwidth
-            \advance\leftmargin\dimexpr\labelsep+\mybibindent\relax\itemindent-\mybibindent
-           \@openbib@code
-           \usecounter{enumiv}
-           \let\p@enumiv\@empty
-           \renewcommand\theenumiv{\@arabic\c@enumiv}}
-     \sloppy
-     \clubpenalty4000
-     \@clubpenalty \clubpenalty
-     \widowpenalty4000%
-     \sfcode`\.\@m}
-    {\def\@noitemerr
-      {\@latex@warning{Empty `thebibliography' environment}}
-     \endlist}
+{\chapter*{\bibname}%
+	\@mkboth{\MakeUppercase\bibname}{\MakeUppercase\bibname}%
+	\list{\@biblabel{\@arabic\c@enumiv}}
+	{\settowidth\labelwidth{\@biblabel{999}}
+		\leftmargin\labelwidth
+		\advance\leftmargin\dimexpr\labelsep+\mybibindent\relax\itemindent-\mybibindent
+		\@openbib@code
+		\usecounter{enumiv}
+		\let\p@enumiv\@empty
+		\renewcommand\theenumiv{\@arabic\c@enumiv}}
+	\sloppy
+	\clubpenalty4000
+	\@clubpenalty \clubpenalty
+	\widowpenalty4000%
+	\sfcode`\.\@m}
+{\def\@noitemerr
+	{\@latex@warning{Empty `thebibliography' environment}}
+	\endlist}
 \makeatother
 
 
@@ -120,10 +120,10 @@
 %{{{ Color cycles
 
 \pgfplotscreateplotcyclelist{mlineplot cycle}{%
-  {TolColor2, mark=*, mark size=1.5pt},
-  {TolColor7, mark=square*, mark size=1.3pt},
-  {TolColor4, mark=triangle*, mark size=1.5pt},
-  {TolColor7, mark=diamond*, mark size=1.5pt},
+	{TolColor2, mark=*, mark size=1.5pt},
+	{TolColor7, mark=square*, mark size=1.3pt},
+	{TolColor4, mark=triangle*, mark size=1.5pt},
+	{TolColor7, mark=diamond*, mark size=1.5pt},
 }
 
 \RequirePackage{tikz}
@@ -138,3 +138,6 @@
 
 \RequirePackage{caption}
 \RequirePackage{subcaption}
+
+\RequirePackage{algpseudocode}
+\RequirePackage[chapter]{algorithm}
