@@ -1,0 +1,11 @@
+\begin{table}[ht!]
+	\centering
+	\begin{tabular}{|l|c|c|}\hline%
+		\textbf{Threads} & \textbf{ZooKeeper} & \textbf{ParKazoo} \\\hline
+		\csvreader[late after line=\\\hline]%
+		{tables/data/combined_read_single_process.csv}{threads=\threads,zookeeper=\zookeeper,parkazoo=\parkazoo}%
+		{\threads        & \zookeeper         & \parkazoo}%     
+	\end{tabular}
+	\caption{Average Read Throughput for a Single Node with a Single Process}
+	\label{table:single_process_write_throughput}
+\end{table}

@@ -1,0 +1,25 @@
+\begin{table}[ht!]
+	\centering
+	\begin{subtable}[t]{1.0\linewidth}
+		\begin{tabular}{|l|c|c|c|}\hline%
+			\textbf{Nodes}   & \textbf{Average Throughput} & \textbf{Mean Latency} & \textbf{Median Latency} \\\hline
+			\csvreader[late after line=\\\hline]%
+			{tables/data/zookeeper_read_multi_node.csv}{nodes=\nodes,throughput=\throughput,mean=\mean,median=\median}%
+			{\nodes & \throughput & \mean & \median}%    
+		\end{tabular}
+		\caption{ZooKeeper}
+		\label{table:zookeeper_multinode_read_throughput}
+	\end{subtable}
+	\begin{subtable}[t]{1.0\linewidth}
+		\begin{tabular}{|l|c|c|c|}\hline%
+			\textbf{Nodes}   & \textbf{Average Throughput} & \textbf{Mean Latency} & \textbf{Median Latency} \\\hline
+			\csvreader[late after line=\\\hline]%
+			{tables/data/parkazoo_read_multi_node.csv}{nodes=\nodes,throughput=\throughput,mean=\mean,median=\median}%
+			{\nodes & \throughput & \mean & \median}%    
+		\end{tabular}
+		\caption{ParKazoo}
+		\label{table:parkazoo_multinode_read_throughput}
+	\end{subtable}
+	\caption{Average read throughput for writes in multiple client nodes with a multiple processes}
+	\label{table:multinode_read_throughput_all}
+\end{table}

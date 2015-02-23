@@ -60,6 +60,12 @@ The throughput rate for the test for both ZooKeeper and ParKazoo are shown in th
 \input{charts/throughput_65_10_15}
 \input{charts/requests_65_10_15}
 
+\subsection{Read Performance}
+For pendantry's sake we also compare the performance of the read operation.
+\input{tables/read_single_process}
+\input{tables/read_single_node}
+\input{tables/read_multi_node}
+
 \section{Conclusion}
 As we can see from the throughput rates when the number of clients is smaller the throughput of the ParKazoo is almost 100\%-120\% higher than the equivalent ZooKeeper setup. However when the number of ParKazoo clients on a single node increases the throughput rate fails to grow and at a certain point drops below the throughput rate of the the equivalent ZooKeeper test node. But the total throughput of ZooKeeper plateaus out at around 6300 requests/seconds. However the request throughput of ParKazoo reached around 11000 requests/second in our tests.
 
