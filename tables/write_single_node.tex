@@ -4,7 +4,7 @@
 		\begin{tabular}{|l|c|}\hline%
 			\textbf{Processes}   & \textbf{Average Throughput} \\\hline
 			\csvreader[late after line=\\\hline]%
-			{tables/data/zookeeper_single_node.csv}{processes=\processes,throughput=\throughput}%
+			{tables/data/zookeeper_write_single_node.csv}{processes=\processes,throughput=\throughput}%
 			{\processes & \throughput}%    
 		\end{tabular}
 		\caption{ZooKeeper}
@@ -15,13 +15,13 @@
 		\begin{tabular}{|l|c|}\hline%
 			\textbf{Processes}   & \textbf{Average Throughput} \\\hline
 			\csvreader[late after line=\\\hline]%
-			{tables/data/parkazoo_single.node.csv}{processes=\processes,throughput=\throughput}%
+			{tables/data/parkazoo_write_single.node.csv}{processes=\processes,throughput=\throughput}%
 			{\processes & \throughput}%    
 		\end{tabular}
 		\caption{ParKazoo}
 		\label{table:single_node_parkazoo_throughput}
 	\end{subtable}
 	  
-	\caption{Average Throughput for a single ZooKeeper client node with a multiple processes}
-	\label{table:single_node_throughput}
+	\caption{Average Write Throughput for a single ZooKeeper client node with a multiple processes}
+	\label{table:single_node_write_throughput}
 \end{table}

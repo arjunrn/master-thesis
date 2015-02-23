@@ -3,9 +3,9 @@
 	\begin{tabular}{|l|c|c|}\hline%
 		\textbf{Threads} & \textbf{ZooKeeper} & \textbf{ParKazoo} \\\hline
 		\csvreader[late after line=\\\hline]%
-		{tables/data/scientists.csv}{threads=\threads,zookeeper=\zookeeper,parkazoo=\parkazoo}%
+		{tables/data/combined_write_single_process.csv}{threads=\threads,zookeeper=\zookeeper,parkazoo=\parkazoo}%
 		{\threads        & \zookeeper         & \parkazoo}%     
 	\end{tabular}
 	\caption{Average Throughput for a single node with a single process}
-	\label{table:single_process_throughput}
+	\label{table:single_process_write_throughput}
 \end{table}

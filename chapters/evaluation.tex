@@ -18,65 +18,13 @@ The server nodes run the ZooKeeper server process. They are either configured to
 \subsection{Client Nodes}
 The Requesters run a python script which forks and creates P number of slave processes. Each slave process in turn spawns T number of threads. Each threads get its own client object which it can use to make requests to the main ensemble. A ParKazoo/Kazoo barrier is used to wait for all the processes to initialize and spawn their threads. Once all the processes reach this barrier and cross the begin to execute a loop. The loops contains a \textit{create} to create a node in the ParKazoo/ZooKeeper tree structure. Upon successful creation of the node the thread records the the current time and also the time it took to execute the operation. After that it removes the same node using the \textit{delete} operations. After this it records the timestamps and execution time just like for the create operation. Henceforth they are referred to as \textit{Requesters}. 
 
-\begin{algorithm}
-	\begin{algorithmic}
-		\Procedure{PerformTests}{$p,n,t,d$}\Comment{p processes, t threads, n clients, d duration}
-		\State $servers\gets \Call{AllocateMachines}{numServers}$
-		\State $\Call {ConfigureServers}{servers}$
-		\State $\Call {StartServers}{servers}$
-		\State $clients\gets \Call{AllocateMachines}{n}$
-		\State $barrier\gets \Call{CreateBarrier}{\null}$
-		\State $finish\gets \Call{CreateFinish}{\null}$
-		\State $counter\gets \Call{CreateCounter}{\null}$
-		\ForAll{$c$ in $clients$}
-		\State $\Call{RunClientTest}{c,barrier,finish,p,t,servers}$
-		\EndFor
-		\While{$counter < p*t*n$}\Comment{Wait for all clients to initialize}
-		\State \Call{Sleep}{$1$}
-		\EndWhile
-		\State $\Call{ClearBarrier}{barrier}$
-		\State $\Call{Sleep}{d}$
-		\State $\Call{SetFinish}{finish}$
-		\While{$counter > 0$}
-		\State $\Call{Sleep}{1}$
-		\EndWhile
-		\State $\Call{StopServers}{servers}$
-		\EndProcedure
-		
-	\end{algorithmic}
-	\caption{Algorithm for Orchestrating Node}
-\end{algorithm}
+\input{algorithms/tests/orchestration}
 
-\begin{algorithm}
-	\begin{algorithmic}
-		\Procedure{ClientTest}{$p,t,f,b,s,c$}
-		\State $processes\gets[]$
-		\For{$i\gets1,p$}
-		\State $p\gets\Call{TestProcess}{t,f,b,c,s}$
-		\State $\Call{Push}{processes, p}$
-		\EndFor
-		\State $\Call{WaitProcessesJoin}{processes}$
-		\EndProcedure
-		
-		\Procedure{TestProcess}{$t,f,b,c,s$}
-		\State $threads\gets[]$
-		\For{$i\gets1,t$}
-		\State $thread\gets\Call{TestThread}{f,b,c,s}$
-		\State $\Call{Push}{threads, thread}$
-		\EndFor
-		\State $\Call{WaitThreadsJoin}{threads}$
-		\State $requests\gets[]$
-		\ForAll{$t$ in $threads$}
-		\State $r\gets\Call{GetRequests}{t}$
-		\State $\Call{Push}{requests, r}$
-		\EndFor
-		\State $\Call{DiskWrite}{requests}$
-		\EndProcedure
-		
-	\end{algorithmic}
-	\caption{Local Test on Client Nodes}
-	
-\end{algorithm}
+\input{algorithms/tests/client_master}
+
+\input{algorithms/tests/client_process}
+
+\input{algorithms/tests/client_thread}
 
 \section{Testing Process}
 The objective of the testing process is to find the peak throughput and the corresponding latencies. The setup consists an ensemble of servers. For ZooKeeper there is a cluster with three servers and for ParKazoo there is an ensemble of three clusters with three servers each. While it would be expected that a 9-Server ParKazoo ensemble should be compared against a 9-Server ZooKeeper cluster, it is more fair to compare it against a 3-Server ZooKeeper cluster. Both the three server ZooKeeper cluster and nine server cluster can tolerate a single server failure. Also since the performance of a cluster is inversely proportional to the size of cluster, the fastest ZooKeeper configuration is a three server configuration. This is an advantage which a nine server ParKazoo ensemble inherently possesses. The procedure for the tests is described as follows:
@@ -95,17 +43,17 @@ Multiple nodes make requests to the ZooKeeper cluster or the ParKazoo ensemble. 
 
 The Figure~\ref{fig:single_node_throughput} shows the throughput over a period of 100 seconds for a single node with a single thread and process. As we can see the throughput is better for ParKazoo than for ZooKeeper. The latencies for the requests are show in Figure~\ref{chart:single_node_latencies}. The latencies for ParKazoo are in the range of 200 milliseconds to 300 milliseconds. Where as for ZooKeeper they are spread across the entire range from 100 to 600 milliseconds. From these initial reading we can assume that the performance for ParKazoo is nominally better than for an equivalent ZooKeeper setup for the minimal configuration.
 
-\input{tables/single_process}
+\input{tables/write_single_process}
 
 Table~\ref{table:single_process_throughput} lists the throughput for a single testing node with a single process. The throughput for ParKazoo is initially higher. But it does not scale linearly as more threads are added. Around the 80 threads mark the throughput for ZooKeeper increases over that of ParKazoo. In fact after more than 110 threads are added to the ParKazoo the process crashes due to the high number of open socket connections. This is of course an operating system limitation but exposes one of the flaws in the design of ParKazoo, that of unscalability. However this situation is unlikely to occur in a production system. The throughput of ZooKeeper increases as additional threads are added to a thread count of 210 threads. For ParKazoo the thread count of 110 is chosen as the highest thread count.
 
-\input{tables/single_node}
+\input{tables/write_single_node}
 
-Then in the next step the number of processes is increased. The Table~\ref{table:single_node_throughput} lists the average throughput for a single node with increasing number of processes for both ZooKeeper and ParKazoo. The Table~\ref{table:single_node_zookeeper_throughput} shows the throughput for ZooKeeper. For eleven processes the maximum throughput is reached. According to Table~\ref{table:single_node_parkazoo_throughput} the maximum throughput for ParKazoo is with 8 processes.
+Then in the next step the number of processes is increased. The Table~\ref{table:single_node_write_throughput} lists the average throughput for a single node with increasing number of processes for both ZooKeeper and ParKazoo. The Table~\ref{table:single_node_zookeeper_throughput} shows the throughput for ZooKeeper. For eleven processes the maximum throughput is reached. According to Table~\ref{table:single_node_parkazoo_throughput} the maximum throughput for ParKazoo is with 8 processes.
 
-Then the test is repeated with the number of threads and processes determined and multiple test nodes. The Table~\ref{table:multinode_throughput_all} lists the throughputs for the tests. From the Table~\ref{table:zookeeper_multinode_throughput} the maximum throughput for ZooKeeper is achieved with 5 nodes. The maximum average throughput is 5421.84 requests/second. From Table~\ref{table:parkazoo_multinode_throughput} the maximum possible throughput for ParKazoo is 11430.90 requests/second. That is not the maximum possible throughput achievable When the tests were conducted with more nodes the clients started disconnecting because of the maximum number of connections which is supported had been reached. The infrastructure cannot support more concurrent connections.
+Then the test is repeated with the number of threads and processes determined and multiple test nodes. The Table~\ref{table:multinode_write_throughput_all} lists the throughputs for the tests. From the Table~\ref{table:zookeeper_multinode_write_throughput} the maximum throughput for ZooKeeper is achieved with 5 nodes. The maximum average throughput is 5421.84 requests/second. From Table~\ref{table:parkazoo_multinode_write_throughput} the maximum possible throughput for ParKazoo is 11430.90 requests/second. That is not the maximum possible throughput achievable When the tests were conducted with more nodes the clients started disconnecting because of the maximum number of connections which is supported had been reached. The infrastructure cannot support more concurrent connections.
 
-\input{tables/multi_node}
+\input{tables/write_multi_node}
 
 The throughput rate for the test for both ZooKeeper and ParKazoo are shown in the Figure~\ref{fig:throughput_time_all}. The Figure~\ref{chart:max_thp_latencies} shows the latencies for requests from the same tests. The latencies for the ZooKeeper from Figure~\ref{chart:zk_max_latency} is in the range of 1.5 seconds to 1.75 seconds. And for ParKazoo from Figure~\ref{chart:parkazoo_max_latency} the latency for the requests is in the range of 250 milliseconds to 1 second. The performance of ParKazoo is better both in terms of throughput and request latencies.
 

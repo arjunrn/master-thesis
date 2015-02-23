@@ -1,0 +1,14 @@
+\begin{algorithm}[ht!]
+	\begin{algorithmic}
+		\Procedure{ClientTest}{$p,t,f,b,s,c$}
+		\State $processes\gets[]$
+		\For{$i\gets1,p$}
+		\State $p\gets\Call{TestProcess}{t,f,b,c,s}$
+		\State $\Call{Push}{processes, p}$
+		\EndFor
+		\State $\Call{WaitProcessesJoin}{processes}$
+		\EndProcedure
+	\end{algorithmic}
+	\caption{Local Test on Client Nodes}
+	\label{algo:testClientMaster}
+\end{algorithm}

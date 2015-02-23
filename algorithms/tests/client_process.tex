@@ -1,0 +1,20 @@
+\begin{algorithm}[ht!]
+	\begin{algorithmic}
+		\Procedure{TestProcess}{$t,f,b,c,s$}
+		\State $threads\gets[]$
+		\For{$i\gets1,t$}
+		\State $thread\gets\Call{TestThread}{f,b,c,s}$
+		\State $\Call{Push}{threads, thread}$
+		\EndFor
+		\State $\Call{WaitThreadsJoin}{threads}$
+		\State $requests\gets[]$
+		\ForAll{$t$ in $threads$}
+		\State $r\gets\Call{GetRequests}{t}$
+		\State $\Call{Push}{requests, r}$
+		\EndFor
+		\State $\Call{DiskWrite}{requests}$
+		\EndProcedure
+	\end{algorithmic}
+	\caption{Individual Process on Test Client}
+	\label{algo:testClientProcess}
+\end{algorithm}

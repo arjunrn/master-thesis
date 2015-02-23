@@ -1,0 +1,29 @@
+\begin{algorithm}[ht!]
+	\begin{algorithmic}
+		\Procedure{PerformTests}{$p,n,t,d$}\Comment{p processes, t threads, n clients, d duration}
+		\State $servers\gets \Call{AllocateMachines}{numServers}$
+		\State $\Call {ConfigureServers}{servers}$
+		\State $\Call {StartServers}{servers}$
+		\State $clients\gets \Call{AllocateMachines}{n}$
+		\State $barrier\gets \Call{CreateBarrier}{\null}$
+		\State $finish\gets \Call{CreateFinish}{\null}$
+		\State $counter\gets \Call{CreateCounter}{\null}$
+		\ForAll{$c$ in $clients$}
+		\State $\Call{RunClientTest}{c,barrier,finish,p,t,servers}$
+		\EndFor
+		\While{$counter < p*t*n$}\Comment{Wait for all clients to initialize}
+		\State \Call{Sleep}{$1$}
+		\EndWhile
+		\State $\Call{ClearBarrier}{barrier}$
+		\State $\Call{Sleep}{d}$
+		\State $\Call{SetFinish}{finish}$
+		\While{$counter > 0$}
+		\State $\Call{Sleep}{1}$
+		\EndWhile
+		\State $\Call{StopServers}{servers}$
+		\EndProcedure
+		
+	\end{algorithmic}
+	\caption{Algorithm for Orchestrating Node}
+	\label{algo:testClientMaster}
+\end{algorithm}

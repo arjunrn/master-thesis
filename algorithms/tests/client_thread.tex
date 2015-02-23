@@ -1,0 +1,26 @@
+\begin{algorithm}[ht!]
+	\begin{algorithmic}
+		\Procedure{TestThreads}{$finish,barrier,counter,serverInfo$}
+			\State $client\gets \Call{CreateClient}{s}$
+			\State $\Call{StartClient}{c}$
+			\State $\Call{IncrementCounter}{client, counter}$
+			\State $\Call{WaitOnBarrier}{client, barrier}$
+			\State $requestPairs\gets []$
+			\While{not \Call{IsSet}{$client, finish$}}
+			\State $t1\gets \Call{CurrentTime}{\null}$
+			\State $node\gets \Call{CreateNode}{client}$
+			\State $t2 \gets \Call{CurrentTime}{\null}$
+			\State $\Call{Push}{t2-t1,t2}$
+			\State $t1\gets\Call{CurrentTime}{\null}$
+			\State $\Call{DeleteNote}{client, node}$
+			\State $t2\gets \Call{CurrentTime}{\null}$
+			\State $\Call{Push}{t2-t1,t2}$
+			\EndWhile
+			\State $\Call{DecrementCounter}{client, counter}$
+			\State $\Call{CloseClient}{client}$
+			\State \Return $requestPairs$
+		\EndProcedure
+	\end{algorithmic}
+	\caption{Componenet thread on Test Client}
+	\label{algo:testClientThread}
+\end{algorithm}
