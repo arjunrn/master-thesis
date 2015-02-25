@@ -1,0 +1,13 @@
+\begin{algorithm}{ht!}
+	\begin{algorithmic}
+		\Procedure{MapNode}{$path,clusters$}
+		\State $parent\_path \gets \Call{ParentPath}{path}$
+		\State $hvalue \gets \Call{SHA256}{parent\_path}$
+		\State $cluster\_count \gets \Call{Length}{cluster}$
+		\State $selected \gets hvalue \bmod cluster\_count$
+		\State \Return  $clusters[selected]$
+		\EndProcedure
+	\end{algorithmic}
+\caption{Algorithm to map the nodes}
+\label{algo:nodeMapping}
+\end{algorithm}

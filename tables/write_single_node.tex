@@ -1,22 +1,22 @@
 \begin{table}[ht!]
-	\centering
-	\begin{subtable}{0.45\linewidth}
-		\begin{tabular}{|l|c|}\hline%
-			\textbf{Processes}   & \textbf{Average Throughput} \\\hline
+	\begin{subtable}{1.0\linewidth}
+		\centering
+		\begin{tabular}{|l|c|c|c|}\hline%
+			\textbf{Processes}   & \textbf{Average Throughput} & \textbf{Mean Latency} & \textbf{Median Latency} \\\hline
 			\csvreader[late after line=\\\hline]%
-			{tables/data/zookeeper_write_single_node.csv}{processes=\processes,throughput=\throughput}%
-			{\processes & \throughput}%    
+			{tables/data/zookeeper_write_single_node.csv}{processes=\processes,throughput=\throughput,mean=\mean,median=\median}%
+			{\processes & \throughput & \mean & \median}%
 		\end{tabular}
 		\caption{ZooKeeper}
 		\label{table:single_node_zookeeper_throughput}
 	\end{subtable}
-	\quad
-	\begin{subtable}{0.45\linewidth}
-		\begin{tabular}{|l|c|}\hline%
-			\textbf{Processes}   & \textbf{Average Throughput} \\\hline
+	\begin{subtable}{1.0\linewidth}
+		\centering
+		\begin{tabular}{|l|c|c|c|}\hline%
+			\textbf{Processes}   & \textbf{Average Throughput} & \textbf{Mean Latency} & \textbf{Median Latency} \\\hline
 			\csvreader[late after line=\\\hline]%
-			{tables/data/parkazoo_write_single_node.csv}{processes=\processes,throughput=\throughput}%
-			{\processes & \throughput}%    
+			{tables/data/parkazoo_write_single_node.csv}{processes=\processes,throughput=\throughput,mean=\mean,median=\median}%
+			{\processes & \throughput & \mean & \median}%
 		\end{tabular}
 		\caption{ParKazoo}
 		\label{table:single_node_parkazoo_throughput}

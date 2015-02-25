@@ -1,27 +1,27 @@
 \begin{table}[ht!]
-	\centering
-	\begin{subtable}[t]{0.45\linewidth}
-		\begin{tabular}{|l|c|}\hline%
-			\textbf{Nodes}   & \textbf{Average Throughput} \\\hline
+	\begin{subtable}[t]{1.0\linewidth}
+		\centering
+		\begin{tabular}{|l|c|c|c|}\hline%
+			\textbf{Nodes}   & \textbf{Average Throughput} & \textbf{Mean Latency} & \textbf{Median Latency} \\\hline
 			\csvreader[late after line=\\\hline]%
-			{tables/data/zookeeper_write_multi_node.csv}{nodes=\nodes,throughput=\throughput}%
-			{\nodes & \throughput}%    
+			{tables/data/zookeeper_write_multi_node.csv}{nodes=\nodes,throughput=\throughput,mean=\mean,median=\median}%
+			{\nodes & \throughput & \mean & \median}%
 		\end{tabular}
 		\caption{ZooKeeper}
 		\label{table:zookeeper_multinode_throughput}
 	\end{subtable}
-	\quad
-	\begin{subtable}[t]{0.45\linewidth}
-		\begin{tabular}{|l|c|}\hline%
-			\textbf{Nodes}   & \textbf{Average Throughput} \\\hline
+	\begin{subtable}[t]{1.0\linewidth}
+		\centering
+		\begin{tabular}{|l|c|c|c|}\hline%
+			\textbf{Nodes}   & \textbf{Average Throughput} & \textbf{Mean Latency} & \textbf{Median Latency}\\\hline
 			\csvreader[late after line=\\\hline]%
-			{tables/data/parkazoo_write_multi_node.csv}{nodes=\nodes,throughput=\throughput}%
-			{\nodes & \throughput}%    
+			{tables/data/parkazoo_write_multi_node.csv}{nodes=\nodes,throughput=\throughput,mean=\mean,median=\median}%
+			{\nodes & \throughput & \mean & \median}%
 		\end{tabular}
 		\caption{ParKazoo}
 		\label{table:parkazoo_multinode_throughput}
 	\end{subtable}
-		
+
 	\caption{Average Throughput for writes in multiple client nodes with a multiple processes}
 	\label{table:multinode_throughput_all}
 \end{table}

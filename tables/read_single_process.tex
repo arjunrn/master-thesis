@@ -1,11 +1,27 @@
 \begin{table}[ht!]
 	\centering
-	\begin{tabular}{|l|c|c|}\hline%
-		\textbf{Threads} & \textbf{ZooKeeper} & \textbf{ParKazoo} \\\hline
-		\csvreader[late after line=\\\hline]%
-		{tables/data/combined_read_single_process.csv}{threads=\threads,zookeeper=\zookeeper,parkazoo=\parkazoo}%
-		{\threads        & \zookeeper         & \parkazoo}%     
-	\end{tabular}
-	\caption{Average Read Throughput for a Single Node with a Single Process}
-	\label{table:single_process_write_throughput}
+	\begin{subtable}[t]{1.0\linewidth}
+		\centering
+		\begin{tabular}{|l|c|c|c|}\hline%
+			\textbf{Threads} & \textbf{Average Throughput} & \textbf{Mean Latency} & \textbf{Median Latency} \\\hline
+			\csvreader[late after line=\\\hline]%
+			{tables/data/zookeeper_read_single_process.csv}{threads=\threads,throughput=\throughput,mean=\mean,median=\median}%
+			{\threads & \throughput & \mean & \median}%
+		\end{tabular}
+		\caption{ZooKeeper}
+		\label{tab:zookeeper_single_process_read_throughput}
+	\end{subtable}
+	\begin{subtable}[t]{1.0\linewidth}
+		\centering
+		\begin{tabular}{|l|c|c|c|}\hline%
+			\textbf{Threads} & \textbf{Average Throughput} & \textbf{Mean Latency} & \textbf{Median Latency} \\\hline
+			\csvreader[late after line=\\\hline]%
+			{tables/data/parkazoo_read_single_process.csv}{threads=\threads,throughput=\throughput,mean=\mean,median=\median}%
+			{\threads & \throughput & \mean & \median}%
+		\end{tabular}
+		\caption{ParKazoo}
+		\label{tab:parkazoo_single_process_read_throughput}
+	\end{subtable}
+	\caption{Average Throughput, Mean Latency and Median Latency for a single node with a single process}
+	\label{table:single_process_read_throughput}
 \end{table}

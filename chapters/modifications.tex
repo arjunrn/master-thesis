@@ -11,6 +11,14 @@ Figure ~\ref{fig:ParKazooArchitecture} depicts a ParKazoo ensemble with three cl
 \section{Client Initialization}
 The information about all the constituent clusters are stored on one cluster which is part of the ParKazoo ensemble or on separate ZooKeeper cluster. The choice of the storage location is irrelevant as long as all the clients can access it. The configuration information could also be stored on all the clusters of the ParKazoo ensemble but this would require that the information is kept consistent. When the client has to be initialized only one of the server addresses has to be provided. The client connects to the server, reads the information about all the clusters and then initializes the individual Kazoo clients with the addresses of all the individual clusters.
 
+\section{Mapping of Nodes}
+As previously discussed the namespace of the data is divided between the clusters of the ParKazoo ensemble. To do this a node has to be mapped to a single cluster. The mapping procedure must always return the same cluster. This way the two different clients will always know where to place the node and where it can be retrieved from.
+
+\input{algorithms/node_mapping}
+
+Algorithm ~\ref{algo:nodeMapping} shows the algorithm to map nodes to clusters. The most important step in this procedure is to produce a hash value of the path string. The  SHA-256 algorithm is used for this purpose. This can be replaced with any other algorithm which has the same properties. The replacement hashing scheme should always the same produce the same output on different platforms for the same path. To place a \textit{znode} in the data tree the mapping function is used to find the cluster. For the lookup of this node the mapping function gives the clusters on which the \textit{znode} and the data for it can be retrieved.
+
+
 \section{ParKazoo Operations}
 Every ParKazoo operation consists of some Kazoo operations wrapped in a single ParKazoo operation. Figure ~\ref{fig:ParKazooAlgo} depicts the basic algorithm which is common to all ParKazoo operations. The algorithm begins by accepting the path of the znode to be operated upon and the type of operation. Then the algorithm establishes if the parent znode exists on the cluster of the target znode. If it does not exists then algorithm creates it if the operation is a modifying operating like \textit{create}. Otherwise an \textit{Error} is returned. Finally the operation is performed and the result of the operation is returned. 
 
@@ -127,11 +135,11 @@ But in a ParKazoo ensemble there are multiple clusters and it's not possible to 
 To implement the transaction the original Kazoo Transaction object is wrapped with basic verification logic which ensures the operations of the transaction are all operating on the same cluster. Every time an operation is added to the transaction the cluster corresponding to that operation is noted. Before the commit occurs the list of clusters is verified so that it contains only a single cluster.
     
 The \textit{Transaction} object provides the following operations:
-\begin{itemize}
+\begin{enumerate}
 	\item \lstinline | def create(path, value='', ephemeral=False, sequence=False) |
 	\item \lstinline | def delete(path, version=-1) |
 	\item \lstinline | def set_data(path, value, version=-1) |
 	\item \lstinline | def check(path, version) |
 	\item \lstinline | def commit_async() |
 	\item \lstinline | def commit() |
-\end{itemize}
+\end{enumerate}

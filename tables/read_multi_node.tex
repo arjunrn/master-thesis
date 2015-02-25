@@ -1,6 +1,6 @@
 \begin{table}[ht!]
-	\centering
-	\begin{subtable}[t]{1.0\linewidth}
+	\begin{subtable}[ht!]{1.0\linewidth}
+		\centering
 		\begin{tabular}{|l|c|c|c|}\hline%
 			\textbf{Nodes}   & \textbf{Average Throughput} & \textbf{Mean Latency} & \textbf{Median Latency} \\\hline
 			\csvreader[late after line=\\\hline]%
@@ -10,7 +10,8 @@
 		\caption{ZooKeeper}
 		\label{table:zookeeper_multinode_read_throughput}
 	\end{subtable}
-	\begin{subtable}[t]{1.0\linewidth}
+	\begin{subtable}[ht!]{1.0\linewidth}
+		\centering
 		\begin{tabular}{|l|c|c|c|}\hline%
 			\textbf{Nodes}   & \textbf{Average Throughput} & \textbf{Mean Latency} & \textbf{Median Latency} \\\hline
 			\csvreader[late after line=\\\hline]%
