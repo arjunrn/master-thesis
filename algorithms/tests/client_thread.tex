@@ -1,8 +1,8 @@
 \begin{algorithm}[ht!]
 	\begin{algorithmic}
 		\Procedure{TestThreads}{$finish,barrier,counter,serverInfo$}
-			\State $client\gets \Call{CreateClient}{s}$
-			\State $\Call{StartClient}{c}$
+			\State $client\gets \Call{CreateClient}{serverInfo}$
+			\State $\Call{StartClient}{client}$
 			\State $\Call{IncrementCounter}{client, counter}$
 			\State $\Call{WaitOnBarrier}{client, barrier}$
 			\State $requestPairs\gets []$
@@ -21,6 +21,6 @@
 			\State \Return $requestPairs$
 		\EndProcedure
 	\end{algorithmic}
-	\caption{Componenet thread on Test Client}
+	\caption{Thread on Test Client}
 	\label{algo:testClientThread}
 \end{algorithm}
